@@ -9,8 +9,8 @@ import logging
 
 # ===== USER DEFINED VARIABLES =============================
 # Define the paths to the directories containing the dataset TXT files
-dir_model_1 = r"C:\Users\klrom\Desktop\Auto1111\stable-diffusion-webui\outputs\txt2img-images\2024-07-21\data_model_1"
-dir_model_2 = r"C:\Users\klrom\Desktop\Auto1111\stable-diffusion-webui\outputs\txt2img-images\2024-07-21\data_model_2"
+dir_model_1 = r"<data_model_1 path here>"
+dir_model_2 = r"<data_model_2 path here>"
 # ===== USER DEFINED VARIABLES =============================
 
 # ===== LOGGING ============================================
