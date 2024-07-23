@@ -82,7 +82,7 @@ To use the script and analyze the face-distance data, follow these steps:
     - Run the script by first setting the script's directory variables to where you placed the example directories and using the included BAT:
         * e.g., `dir_model_1 = r"C:\path\to\data_model_1"`
         * e.g., `dir_model_2 = r"C:\path\to\data_model_2"`
-        * * The script should then replicate the example output and graph seen in the repo!
+        * The script should then replicate the example output and graph seen in the repo!
     - Experiment with moving different TXT files from each data set into the `extras` folder of each directory (which the script ignores) and see the effect on the resulting graphs and calculations!
 
 ## Contributing
@@ -110,5 +110,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Matteo Spinelli](https://github.com/cubiq/ComfyUI_FaceAnalysis) for creating the ComfyUI custom node that I used to generate the similairy metric data for each model.
 - [OpenAI](https://www.openai.com) for providing guidance and assistance in developing this project.
 - [GitHub](https://github.com) for hosting the repository.
-- [Dr. Furkan Gözükara](https://www.patreon.com/SECourses/posts) for sharing his scripts through the SECourses Patron, associated Discord server, and YouTube channel.
+- [Dr. Furkan Gözükara](https://www.patreon.com/SECourses/posts) for sharing his scripts through the SECourses Patreon, associated Discord server and YouTube channel.
   These resources were invaluable to me during the development of this project and served as guides/templates for creating such scripts.
