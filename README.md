@@ -79,7 +79,7 @@ To use the script and analyze the face-distance data, follow these steps:
 
 4. \[EXAMPLE\] Please follow these steps to replicate the example output TXT file and the example graph:
     - The `Example_Data_Directories.zip` contains two folders, `data_model_1` and `data_model_2`, each with TXT files containing L2_Norm similarity metric data. Within each folder, there are various TXT files, labled like `a1_H.txt` and an `extras` folder. The TXT files represent face-distance data gained from 5 reference images of the main subject (i.e. a,b,g,n,z), from 3 batches that were randomly sorted from the total 600+ image data (i.e. 1,2,3), and from two seperate Stable Diffusion models trained on the same dataset (i.e. H and not). The only difference between these two models is that 'H' used the Min_SNR_Gamma Loss Weight function (e.g. see [OneTrainer GUI](https://github.com/Nerogar/OneTrainer)) and 'not' used the defualt Constant function. All other hyperparamters were left the same between the two.
-    - Run the script by first setting the script's directory variables to where you placed the example directories and using the included BAT:
+    - Run the script by first setting the script's directory variables to where you placed the example directories and use the included BAT:
         * e.g., `dir_model_1 = r"C:\path\to\data_model_1"`
         * e.g., `dir_model_2 = r"C:\path\to\data_model_2"`
         * The script should then replicate the example output and graph seen in the repo!
