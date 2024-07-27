@@ -14,7 +14,7 @@ Ultimately, the success of a model is determined by its ability to reliably repr
 
 Built with the help of GPT-4o; thanks Zedd! (>'.')>[<3] 
 
-Feel free to use, share, and modify this sutie to suit your needs.
+Feel free to use, share, and modify this suite to suit your needs.
 Made "for fun", and shared completely for free to those who love GenAI.
 <(˶ᵔᵕᵔ˶)>
 
@@ -36,13 +36,13 @@ Made "for fun", and shared completely for free to those who love GenAI.
 #### Added:
 - New `create_facedistance_data.py` script to carry out data generation without the need for an external app.
 - New `gui.py` script for GUI interface; use `run_GUI.bat` to begin app and use both main scripts.
-- Added `Mult-Model Round-Robin` tournament style comparison capability which allows for more than two models to be compared at once
+- Added `Multi-Model Round-Robin` tournament style comparison capability which allows for more than two models to be compared at once
   (old way is now called Two-Model Direct Comparison).
 - Added `install_MGAS.bat` to create venv with required Python dependencies and to automatically download DLib models needed for the CREATE script.
 - Added additional information via two `PLEASE_READ_ME.txt` files, one in main and other in example directories.
   
 ### Changed:
-- Reordered the `order_of_import_of_metrics` varialbe in the BULK script.
+- Reordered the `order_of_import_of_metrics` variable in the BULK script.
 - Changed what information is made immediately available, via terminal/GUI; check `LOGS` directory for detailed logs.
 - Directory path assignment, and important user defined variables, now accessed through GUI; no longer need to edit any of the scripts!
 
@@ -67,7 +67,7 @@ _First release._
 
 To use the script and analyze the face-distance data, follow these steps (see `PLEASE_READ_ME.txt` files for more details):
 
-0. GitHub does not like empty directories, so please delete any text files called `DELETE_ME.txt` in the `DIR` fodlers.
+0. GitHub does not like empty directories, so please delete any text files called `DELETE_ME.txt` in the `DIR` folders.
    
 1. After installing required dependencies, use the provided `run_GUI.bat` file to open the GUI and use the scripts.
    
