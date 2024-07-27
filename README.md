@@ -1,6 +1,6 @@
 # Metric Generation and Analysis Suite
 
-Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories for more information, details, and results from three of my experiments using this suite of scripts.
+Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories for more information, details, and results from three of my experiments using this suite of scripts. Also check out the associated Civitai article, [here](https://civitai.com/articles/6327/statistical-analysis-of-ai-models-an-overview-of-the-mgas-comparison-method-and-scripts)
 
 A Python script I designed to help me analyze large datasets of face-embedding distances, determining a generalized accuracy score based on various statistical methods. This script creates for (at least) two folders a set of facial similarity metric data, contained as lists of values (e.g. \[1,2,3,...\]) for each image, 
 and calculates multiple statistical metrics and visualizes the results. 
