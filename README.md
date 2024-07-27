@@ -38,7 +38,7 @@ Made "for fun", and shared completely for free to those who love GenAI.
 - New `gui.py` script for GUI interface; use `run_GUI.bat` to begin app and use both main scripts.
 - Added `Multi-Model Round-Robin` tournament style comparison capability which allows for more than two models to be compared at once
   (old way is now called Two-Model Direct Comparison).
-- Added the `Kolmogorov-Smirnov` normality test; code will swith switch from the `Shapiro-Wilk` test when data sets get sufficiently large (~5000)
+- Added the `Kolmogorov-Smirnov` normality test; code will switch from the `Shapiro-Wilk` test when data sets get sufficiently large (~5000)
 - Added `install_MGAS.bat` to create venv with required Python dependencies and to automatically download DLib models needed for the CREATE script.
 - Added additional information via two `PLEASE_READ_ME.txt` files, one in main and other in example directories.
   
