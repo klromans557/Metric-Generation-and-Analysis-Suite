@@ -71,7 +71,7 @@ To use the script and analyze the face-distance data, follow these steps (see `P
    
 1. After installing required dependencies, use the provided `run_GUI.bat` file to open the GUI and use the scripts.
    
-2. Make sure your image folders and fixed set of reference images are in the correct directories within `DIR` before clicking the `Run Create Script` button
+2. Make sure your image folders and fixed set of reference images are in the correct directories within `DIR` before clicking the `Run Create Script` button.
    This script will generate the face similarity metric data in the `output` folder.
 
 3. Data collected, or placed, into the `output` folder is accessible to the BULK script. Use `Run Bulk Script` button to perform statistics on data.
