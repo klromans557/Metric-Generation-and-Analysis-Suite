@@ -1,0 +1,59 @@
+Using DLib model.
+Script started using CPU.
+Starting the image processing...
+Processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmpp2M_K_25
+Finished processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmpp2M_K_25
+Processing reference image: ComfyUI-belle-22.png for folder: previews_dpmpp2M_K_25
+Finished processing reference image: ComfyUI-belle-22.png for folder: previews_dpmpp2M_K_25
+Processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmpp2M_K_25
+Finished processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmpp2M_K_25
+Processing reference image: ComfyUI-nami-39.png for folder: previews_dpmpp2M_K_25
+Finished processing reference image: ComfyUI-nami-39.png for folder: previews_dpmpp2M_K_25
+Processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmpp2M_K_25
+Finished processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmpp2M_K_25
+Finished processing all reference images for folder: previews_dpmpp2M_K_25. Generated 5 output TXT files.
+Processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmpp3MSDE_Exp_30
+Finished processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmpp3MSDE_Exp_30
+Processing reference image: ComfyUI-belle-22.png for folder: previews_dpmpp3MSDE_Exp_30
+Finished processing reference image: ComfyUI-belle-22.png for folder: previews_dpmpp3MSDE_Exp_30
+Processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmpp3MSDE_Exp_30
+Finished processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmpp3MSDE_Exp_30
+Processing reference image: ComfyUI-nami-39.png for folder: previews_dpmpp3MSDE_Exp_30
+Finished processing reference image: ComfyUI-nami-39.png for folder: previews_dpmpp3MSDE_Exp_30
+Processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmpp3MSDE_Exp_30
+Finished processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmpp3MSDE_Exp_30
+Finished processing all reference images for folder: previews_dpmpp3MSDE_Exp_30. Generated 5 output TXT files.
+Processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmppSDE_K_20
+Finished processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmppSDE_K_20
+Processing reference image: ComfyUI-belle-22.png for folder: previews_dpmppSDE_K_20
+Finished processing reference image: ComfyUI-belle-22.png for folder: previews_dpmppSDE_K_20
+Processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmppSDE_K_20
+Finished processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmppSDE_K_20
+Processing reference image: ComfyUI-nami-39.png for folder: previews_dpmppSDE_K_20
+Finished processing reference image: ComfyUI-nami-39.png for folder: previews_dpmppSDE_K_20
+Processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmppSDE_K_20
+Finished processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmppSDE_K_20
+Finished processing all reference images for folder: previews_dpmppSDE_K_20. Generated 5 output TXT files.
+Processing reference image: ComfyUI-aerith-06.png for folder: previews_restart_K_40
+Finished processing reference image: ComfyUI-aerith-06.png for folder: previews_restart_K_40
+Processing reference image: ComfyUI-belle-22.png for folder: previews_restart_K_40
+Finished processing reference image: ComfyUI-belle-22.png for folder: previews_restart_K_40
+Processing reference image: ComfyUI-gwen-29.png for folder: previews_restart_K_40
+Finished processing reference image: ComfyUI-gwen-29.png for folder: previews_restart_K_40
+Processing reference image: ComfyUI-nami-39.png for folder: previews_restart_K_40
+Finished processing reference image: ComfyUI-nami-39.png for folder: previews_restart_K_40
+Processing reference image: ComfyUI-zelda-59.png for folder: previews_restart_K_40
+Finished processing reference image: ComfyUI-zelda-59.png for folder: previews_restart_K_40
+Finished processing all reference images for folder: previews_restart_K_40. Generated 5 output TXT files.
+Processing reference image: ComfyUI-aerith-06.png for folder: rand_woman
+Finished processing reference image: ComfyUI-aerith-06.png for folder: rand_woman
+Processing reference image: ComfyUI-belle-22.png for folder: rand_woman
+Finished processing reference image: ComfyUI-belle-22.png for folder: rand_woman
+Processing reference image: ComfyUI-gwen-29.png for folder: rand_woman
+Finished processing reference image: ComfyUI-gwen-29.png for folder: rand_woman
+Processing reference image: ComfyUI-nami-39.png for folder: rand_woman
+Finished processing reference image: ComfyUI-nami-39.png for folder: rand_woman
+Processing reference image: ComfyUI-zelda-59.png for folder: rand_woman
+Finished processing reference image: ComfyUI-zelda-59.png for folder: rand_woman
+Finished processing all reference images for folder: rand_woman. Generated 5 output TXT files.
+Script completed successfully.

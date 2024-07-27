@@ -1,0 +1,59 @@
+========================================================
+General Accuracy Scores - Uniform Weights
+========================================================
+General Accuracy Score for Model 1: 0.2458
+General Accuracy Score for Model 7: 0.2823
+
+========================================================
+General Accuracy Scores - Subjective Weights
+========================================================
+General Accuracy Score for Model 1: 0.2679
+General Accuracy Score for Model 7: 0.3173
+
+========================================================
+General Accuracy Scores - PCA-Based Weights
+========================================================
+General Accuracy Score for Model 1: 0.3253
+General Accuracy Score for Model 7: 0.5062
+
+========================================================
+General Accuracy Scores - Inverse Variance-Based Weights
+========================================================
+General Accuracy Score for Model 1: 0.3216
+General Accuracy Score for Model 7: 0.3203
+
+========================================================
+General Accuracy Scores - AHP-Based Weights
+========================================================
+General Accuracy Score for Model 1: 0.2754
+General Accuracy Score for Model 7: 0.3603
+
+========================================================
+Averaged General Accuracy Scores
+========================================================
+AGAS for Model 1: 0.2872
+AGAS for Model 7: 0.3573
+
+--------------------------------------------------------
+Better Model from Two-Model Direct Comparison
+--------------------------------------------------------
+Model 1 has the better AGAS.
+
+Model 1 won 4/5 methods
+Model 7 won 1/5 methods
+
+Model 1 has the best possible AGAS based on the above
+methods and statistics!
+
+--------------------------------------------------------
+Final Outcome from Multi-Model Round-Robin
+--------------------------------------------------------
+Model 1: Mean AGAS = 0.2636
+Model 2: Mean AGAS = 0.3048
+Model 3: Mean AGAS = 0.2589
+Model 4: Mean AGAS = 0.2234
+Model 5: Mean AGAS = 0.2413
+Model 6: Mean AGAS = 0.3388
+Model 7: Mean AGAS = 0.3272
+
+Model 4 has the best MAGAS of: 0.2234
