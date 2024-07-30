@@ -13,6 +13,8 @@ Here are some example data to help you to understand, and experiment with, my sc
 -- When testing against random people from my regularization (REG) set, the histogram distribution should be centered very close to a value of 0.5, i.e. have a Mean and Median very close to that (not `exactly` 0.5 always, since the REG data IS baked into the model after all, but nearly so). 
 -- When tested with correlated generated images (model trained on the reference subject) the center should be much smaller and closer to the approximate range, [0.2 - 0.3] (may differ based on quality of trained model; I'd say mine is Rated: "Pretty Dang Good" [~0.21]).
 
+4. The following six folder beginning with 'sRank' and 'sSgarbage' are data for testing seeing which combination of Rank(Dim) and Alpha achieved the best replication of likeness. The first set contains a ton of data points for good statistics, while the second set is the exact opposite. I included both so that you can see the effect of good or bad data can have on the output of MGAS.
+
 >>> HOW TO USE EXAMPLE DIR <<<
 >>> Feel free to mix-n-match as many directories as you want to test the scripts capabilities. To do so, move as many of the example directories (folders) as you want to test into the 'output' subdirectory of the 'DIR' folder. The script will analyze as many model data folders as you place in the 'output' folder. 
 --> Keep in mind that only the first two folders (by order in directory, name, ascending) will be used for the two-model comparison test, by default. Change the 'models_to_compare_directly' USER DEFINED variable in the GUI in order to compare a different pair of models. For example: use 3,4 to compare the third and fourth models (default is 1,2; compare first and second models).

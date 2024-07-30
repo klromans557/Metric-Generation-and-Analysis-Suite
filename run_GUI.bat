@@ -15,7 +15,7 @@ echo Starting MGAS GUI...
 echo.
 echo =====================================================================
 echo.
-echo                "Remember, lower IS better!" -r557
+echo                "Remember, lower IS better!" - r557
 echo.
 echo =====================================================================
 

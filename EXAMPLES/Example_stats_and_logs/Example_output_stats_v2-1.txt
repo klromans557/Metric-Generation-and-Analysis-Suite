@@ -1,0 +1,65 @@
+--------------------------------------------------------
+Accuracy Scores - Uniform Weights
+--------------------------------------------------------
+Accuracy Score for Model 1: 0.1393
+Accuracy Score for Model 2: 0.1369
+
+--------------------------------------------------------
+Accuracy Scores - Optimized Weights
+--------------------------------------------------------
+Accuracy Score for Model 1: 0.1374
+Accuracy Score for Model 2: 0.1345
+
+--------------------------------------------------------
+Accuracy Scores - Weighted Rank Sum Weights
+--------------------------------------------------------
+Accuracy Score for Model 1: 0.1678
+Accuracy Score for Model 2: 0.1646
+
+--------------------------------------------------------
+Accuracy Scores - Inverse Variance Weights
+--------------------------------------------------------
+Accuracy Score for Model 1: 0.2192
+Accuracy Score for Model 2: 0.2176
+
+--------------------------------------------------------
+Accuracy Scores - Analytic Hierarchy Process Weights
+--------------------------------------------------------
+Accuracy Score for Model 1: 0.2099
+Accuracy Score for Model 2: 0.2062
+
+--------------------------------------------------------
+Accuracy Scores - R_Principal Component Analysis Weights
+--------------------------------------------------------
+Accuracy Score for Model 1: 0.1501
+Accuracy Score for Model 2: 0.1494
+
+--------------------------------------------------------
+Accuracy Scores - ``Meat-N-Potatoes`` Weights
+--------------------------------------------------------
+Accuracy Score for Model 1: 0.3636
+Accuracy Score for Model 2: 0.3595
+
+--------------------------------------------------------
+General Accuracy Scores
+--------------------------------------------------------
+General Accuracy Score for Model 1: 0.1982
+General Accuracy Score for Model 2: 0.1955
+
+========================================================
+Two-Model Direct Comparison
+========================================================
+Model 1 won 0/7 methods
+Model 2 won 7/7 methods
+Model 2 has the best GAS of: 0.1982
+
+Model 2 has the best chance replicating the reference!
+
+========================================================
+Multi-Model Round-Robin
+========================================================
+Model 1: Mean General Accuracy Score = 0.1976
+Model 2: Mean General Accuracy Score = 0.1864
+Model 3: Mean General Accuracy Score = 0.1847
+
+Model 3 has the best MGAS of: 0.1847

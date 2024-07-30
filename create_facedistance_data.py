@@ -6,6 +6,7 @@ from PIL import Image
 import dlib
 from scipy.spatial.distance import cosine, euclidean
 import numpy.linalg as la
+import multiprocessing
 from multiprocessing import Pool
 
 ############## CREATE FACE-DISTANCE DATA ###################
@@ -80,6 +81,11 @@ def compute_distance(embedding1, embedding2, metric):
     else:
         raise ValueError("Unsupported distance metric")
 
+def validate_num_processes(num_processes):
+    max_processes = (multiprocessing.cpu_count() // 2) + 2
+    if num_processes > max_processes:
+        raise ValueError(f"Number of processes ({num_processes}) exceeds the number of recommended ``safe`` CPU cores/threads ({max_processes}).")
+
 def process_single_image(args):
     image_path, ref_embedding, metric, model_class, shape_predictor_path, face_recognition_model_path = args
     embedding = get_face_embedding(image_path, model_class, shape_predictor_path, face_recognition_model_path)
@@ -87,7 +93,6 @@ def process_single_image(args):
         return compute_distance(ref_embedding, embedding, metric)
     return None
 
-# ============================================================
 def process_images(dir_images, dir_references, dir_output, model_class, metric, shape_predictor_path, face_recognition_model_path, num_processes, log_file):
     log("Starting the image processing...", log_file)
 
@@ -126,19 +131,21 @@ def process_images(dir_images, dir_references, dir_output, model_class, metric, 
 
                     log(f"End reference: {ref_image_name}; folder: {subdir_name}", log_file)
 
-                log(f"{'=' * 50}\n"f"Finished processing all reference images for folder: {subdir_name}.\n"f"Generated {output_files_generated} output TXT files.\n"f"{'=' * 50}", log_file)
+                log(f"{'=' * 50}\n"f"Finished all references for folder: {subdir_name}\n"f"Generated {output_files_generated} output TXT files.\n"f"{'=' * 50}", log_file)
 
     except Exception as e:
         error_message = f"An error occurred during image processing: {str(e)}"
         log(error_message, log_file)
         sys.exit(error_message)
+# ===== FUNCTION ZOO =======================================
 
-if __name__ == "__main__":
+# XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX [[[ MAIN ]]] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+def main():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
         logs_dir = os.path.join(script_dir, 'LOGS')
         
-       # Ensure the LOGS directory exists
+        # Ensure the LOGS directory exists
         if not os.path.exists(logs_dir):
             os.makedirs(logs_dir)
         
@@ -147,6 +154,14 @@ if __name__ == "__main__":
         # Clear the log file at the start of each run
         with open(log_file, 'w') as f:
             f.write('Starting new run...\n')
+         
+        # Validate number of processes
+        try:
+            num_processes = int(os.getenv('NUM_PROCESSES', 2))
+            validate_num_processes(num_processes)
+        except ValueError as e:
+            log(str(e), log_file)
+            sys.exit(str(e))
 
         # Paths to model files for DLib; place these .dat files in the DLIB directory in order for the script to find them
         # ¡NOTE! Use these HuggingFace links: (https://huggingface.co/matt3ounstable/dlib_predictor_recognition/resolve/main/shape_predictor_5_face_landmarks.dat?download=true) 
@@ -194,6 +209,7 @@ if __name__ == "__main__":
         log(f"Script started using CPU.", log_file)
         process_images(dir_images, dir_references, dir_output, model_class, distance_metric, shape_predictor_path, face_recognition_model_path, num_processes, log_file)
         log("Script completed successfully.", log_file)
+        
     except Exception as e:
         error_message = f"An error occurred in the main function: {str(e)}"
         log(error_message, log_file)
@@ -201,3 +217,7 @@ if __name__ == "__main__":
     finally:
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
+# XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX [[[ MAIN ]]] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+if __name__ == "__main__":
+    main()
