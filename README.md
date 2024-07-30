@@ -35,7 +35,7 @@ Made "for fun", and shared completely for free to those who love GenAI.
 
 #### Added:
 - Included the `optimize_facedata_weights.py` used to generated associated weights in `_EXTRAS` for user reference
-- Included additional experimental data in `Example_Data_Directories` over extracted LoRA Rank(Dim) and Alpha cominations,
+- Included additional experimental data in `Example_Data_Directories` over extracted LoRA Rank(Dim) and Alpha combinations,
   as well as updated example figures and logs
 - Added `Weighted Rank Sum`-Based Weights to list of used methods
 - Added my personal `Meat-N-Potatoes`-Based Weights as a "sanity check"
@@ -46,10 +46,10 @@ Made "for fun", and shared completely for free to those who love GenAI.
 - Changed the Kurtosis and Skewness to, `Sc_Kurtosis` & `Sc_Skewness`, which are scaled versions that have the correct "units" as the data
 
 #### Fixed:
-- ¡HUGE! Metric redundencies were curtailed through correlation analysis, and a minimum set of metrics was chosen through optimization
+- ¡HUGE! Metric redundancies were curtailed through correlation analysis, and a minimum set of metrics was chosen through optimization
 - ¡HUGE! All metrics have been scaled and standardized to ensure that they have the same "units" as each other and the data
 - ¡HUGE! GAS/MGAS calculations fixed to better capture the notion/maxim that, 'more overall low-valued data, the better the distribution'
-- Fixed some GUI options not giving the appropriate warning when the user puts in inappropriate values;'Number of Processes' & 'Models to Compare'
+- Fixed some GUI options not giving the appropriate warning when the user puts in inappropriate values; 'Number of Processes' & 'Models to Compare'
 - Fixed hyphen in GUI start message that was "too dang close"
 
 ### [2.0] - 2024/07/26
