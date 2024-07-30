@@ -18,7 +18,7 @@ Feel free to use, share, and modify this suite to suit your needs.
 Made "for fun", and shared completely for free to those who love GenAI.
 <(˶ᵔᵕᵔ˶)>
 
-![screenshot](EXAMPLES/Example_Figures/Example_Figure_0_v2GUI.png)
+![screenshot](EXAMPLES/Example_Figures/Example_Figure_0_v2G-1UI.png)
 
 ## Table of Contents
 
