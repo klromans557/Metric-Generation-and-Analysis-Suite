@@ -33,7 +33,7 @@ Made "for fun", and shared completely for free to those who love GenAI.
 
 ### [2.3] - 2024/07/31
 
-####Changed:
+#### Changed:
 - Changed how model names were assigned. Now, model names follow their folder names instead of the generic 'model_x' format, and this change should be reflected in the corresponding LOGS.
 - Changed how model names were sorted with regards to the 'models to compare directly' variable. Now, model order is prepended onto folder names such that which two models are chosen is no longer ambiguous, e.g. 'model_name' --> '1_model_name'. Python was sorting by name in a slightly different way from Windows, and this was resulting in the incorrect folders being assigned to the 'models to compare directly' variable; i.e. script order was not matching what the user could see in the 'output' folder itself.
 
