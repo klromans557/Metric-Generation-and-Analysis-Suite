@@ -18,7 +18,7 @@ Feel free to use, share, and modify this suite to suit your needs.
 Made "for fun", and shared completely for free to those who love GenAI.
 <(˶ᵔᵕᵔ˶)>
 
-![screenshot](EXAMPLES/Example_Figures/Example_Figure_0_v2-1GUI.png)
+![screenshot](EXAMPLES/Example_Figures/Example_Figure_0_v2-2GUI.png)
 
 ## Table of Contents
 
@@ -30,6 +30,14 @@ Made "for fun", and shared completely for free to those who love GenAI.
 - [Acknowledgments](#acknowledgments)
 
 ## Changelog
+
+### [2.2] - 2024/07/30
+
+#### Changed:
+- Changed how the results of the Round-Robin were determined and reported. The convoluted MGAS system has been replaced with a simple, but effective, tally system.
+  Results of the Round-Robin now "make sense", and should now accurately reflect the results from Two-Model Direct Comparisons; previous method was far too unreliable and unpredictable.
+- Changed the GAS back to its intended definition, that of a score determined by an individual weight method.
+- Changed the MGAS back to its intended definition, that of a simple Mean-GAS for each model based on all weight methods. 
 
 ### [2.1] - 2024/07/29
 
