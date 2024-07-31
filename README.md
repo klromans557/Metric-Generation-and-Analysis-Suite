@@ -35,7 +35,8 @@ Made "for fun", and shared completely for free to those who love GenAI.
 
 #### Changed:
 - Changed how the results of the Round-Robin were determined and reported. The convoluted MGAS system has been replaced with a simple, but effective, tally system.
-  Results of the Round-Robin now "make sense", and should now accurately reflect the results from Two-Model Direct Comparisons; previous method was far too unreliable and unpredictable.
+- Results of the Round-Robin now "make sense" and should now accurately reflect the results from Two-Model Direct Comparisons; previous method was far too unreliable and unpredictable.
+- Changed Round-Robin to only report the wins of the top three models.
 - Changed the GAS back to its intended definition, that of a score determined by an individual weight method.
 - Changed the MGAS back to its intended definition, that of a simple Mean-GAS for each model based on all weight methods. 
 
