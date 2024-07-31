@@ -31,7 +31,7 @@ Made "for fun", and shared completely for free to those who love GenAI.
 
 ## Changelog
 
-### [2.2] - 2024/07/29
+### [2.2] - 2024/07/30
 
 #### Changed:
 - Changed how the results of the Round-Robin were determined and reported. The convoluted MGAS system has been replaced with a simple, but effective, tally system.
