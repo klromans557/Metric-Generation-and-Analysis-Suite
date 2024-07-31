@@ -770,7 +770,7 @@ def main():
     main_logger.info(symbol_separator2 * logger_common_symbol_length)
     
     better_model_idx = model_idx_1 if (average_score_1 < average_score_2) else model_idx_2
-    better_average_score = average_score_1 if (average_score_1 < average_score_2) else average_score_1
+    better_average_score = average_score_1 if (average_score_1 < average_score_2) else average_score_2
     
     main_logger.info(f"Model {model_idx_1 + 1} won {wins_1}/7 methods")
     main_logger.info(f"Model {model_idx_2 + 1} won {wins_2}/7 methods")
