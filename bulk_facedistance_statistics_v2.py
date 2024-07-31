@@ -399,9 +399,12 @@ def interpret_test_results(test_result, test_name):
 def perform_comparison(dir_model_1, dir_model_2):
     values_1 = read_data_from_directory(dir_model_1)
     values_2 = read_data_from_directory(dir_model_2)
+    
+    folder_name_1 = os.path.basename(dir_model_1)
+    folder_name_2 = os.path.basename(dir_model_2)
 
     if values_1.size == 0 or values_2.size == 0:
-        print(f"Skipping comparison between {dir_model_1} and {dir_model_2} due to empty data.")
+        print(f"Skipping comparison between {folder_name_1} and {folder_name_2} due to empty data.")
         return [np.nan] * len(order_of_import_of_metrics), [np.nan] * len(order_of_import_of_metrics), [], [], [], [], [], [], []
 
     metrics_1 = calculate_metrics(values_1)
@@ -450,12 +453,13 @@ def perform_comparison(dir_model_1, dir_model_2):
     return average_score_1, average_score_2, uniform_weights, optimized_weights, weighted_rank_sum_weights, inverse_variance_weights, ahp_weights, robust_pca_weights, mnp_weights
 
 # Only top winners of Round-Robin are reported
-def report_top_winners(win_counts, top_n=3, logger=None):
+def report_top_winners(win_counts, top_n=3, logger=None, model_dirs=[]):
     sorted_win_counts = sorted(win_counts.items(), key=lambda item: item[1], reverse=True)
     if logger:
         logger.info("Top Winners:")
         for i, (model_index, count) in enumerate(sorted_win_counts[:top_n]):
-            logger.info(f"Model {model_index + 1}: Wins = {count}")
+            folder_name = os.path.basename(model_dirs[model_index])
+            logger.info(f"{folder_name}: Wins = {count}")
     return sorted_win_counts[0][0]  # Return the index of the top winner
 
 # Defines the Round-Robin tournament style
@@ -535,6 +539,21 @@ def main():
         return
     
     model_dirs = [os.path.join(base_dir, subdir) for subdir in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, subdir))]
+    model_dirs.sort()  # Sort the model directories by name
+    
+    # Check if directories already have prepended numbers
+    if not all(os.path.basename(d).split('_', 1)[0].isdigit() for d in model_dirs):
+        # Rename directories with prepended numbers for user clarity
+        renamed_dirs = []
+        for i, model_dir in enumerate(model_dirs, start=1):
+            base_name = os.path.basename(model_dir)
+            new_name = f"{i}_{base_name}"
+            new_path = os.path.join(base_dir, new_name)
+            os.rename(model_dir, new_path)
+            renamed_dirs.append(new_path)
+
+        model_dirs = renamed_dirs  # Update model_dirs with renamed directories
+
     
     if len(model_dirs) < 2:
         print("Error: There must be at least two model directories to compare.")
@@ -561,6 +580,9 @@ def main():
 
     values_1 = read_data_from_directory(model_dirs[model_idx_1])
     values_2 = read_data_from_directory(model_dirs[model_idx_2])
+    
+    folder_name_1 = os.path.basename(model_dirs[model_idx_1])
+    folder_name_2 = os.path.basename(model_dirs[model_idx_2])
 
     if values_1.size == 0 or values_2.size == 0:
         print(f"Error: One or both specified model directories have no valid data.")
@@ -598,15 +620,15 @@ def main():
     metric_dict_1 = {name: round_and_format(value) for name, value in zip(order_of_import_of_metrics, get_metric_values(metrics_1, order_of_import_of_metrics))}
     metric_dict_2 = {name: round_and_format(value) for name, value in zip(order_of_import_of_metrics, get_metric_values(metrics_2, order_of_import_of_metrics))}
 
-    metrics_logger.info(f"Metrics for Model {model_idx_1 + 1}: %s", metric_dict_1)
-    metrics_logger.info(f"Metrics for Model {model_idx_2 + 1}: %s", metric_dict_2)
+    metrics_logger.info(f"Metrics for {folder_name_1}: %s", metric_dict_1)
+    metrics_logger.info(f"Metrics for {folder_name_2}: %s", metric_dict_2)
    
     metrics_logger.info("\n" + "="*50)
     metrics_logger.info("Weight Values")
     metrics_logger.info("="*50)
     
     # Create and display histograms of the data
-    create_histogram_and_display_metrics(values_1, values_2, f'Model {model_idx_1 + 1}', f'Model {model_idx_2 + 1}', metrics_1, metrics_2)
+    create_histogram_and_display_metrics(values_1, values_2, folder_name_1, folder_name_2, metrics_1, metrics_2)
     
     # Perform direct comparison
     average_score_1, average_score_2, uniform_weights, optimized_weights, weighted_rank_sum_weights, inverse_variance_weights, ahp_weights, robust_pca_weights, mnp_weights = perform_comparison(model_dirs[model_idx_1], model_dirs[model_idx_2])
@@ -626,21 +648,21 @@ def main():
     metrics_logger.info("Normal Tests")
     metrics_logger.info("="*50)
 
-    metrics_logger.info(f"\nSynthetic Metrics for Model {model_idx_1 + 1}: %s", synthetic_metric_dict_1)
-    metrics_logger.info(f"Synthetic Metrics for Model {model_idx_2 + 1}: %s", synthetic_metric_dict_2)
+    metrics_logger.info(f"\nSynthetic Metrics for {folder_name_1}: %s", synthetic_metric_dict_1)
+    metrics_logger.info(f"Synthetic Metrics for {folder_name_2}: %s", synthetic_metric_dict_2)
 
-    metrics_logger.info(f"\nSynthetic Normal Distribution Metrics Comparison for Model {model_idx_1 + 1} (percent differences):")
+    metrics_logger.info(f"\nSynthetic Normal Distribution Metrics Comparison for {folder_name_1} (percent differences):")
     for name, diff in zip(order_of_import_of_metrics, fractional_percent_diff_1):
         metrics_logger.info(f"{name}: {round_and_format(diff)}%")
 
-    metrics_logger.info(f"\nSynthetic Normal Distribution Metrics Comparison for Model {model_idx_2 + 1} (percent differences):")
+    metrics_logger.info(f"\nSynthetic Normal Distribution Metrics Comparison for {folder_name_2} (percent differences):")
     for name, diff in zip(order_of_import_of_metrics, fractional_percent_diff_2):
         metrics_logger.info(f"{name}: {round_and_format(diff)}%")
 
-    metrics_logger.info(f"\n{test_name_1} Test for Model {model_idx_1 + 1}: statistic={normality_test_1.statistic:.5f}, p-value={normality_test_1.pvalue:.5f}")
+    metrics_logger.info(f"\n{test_name_1} Test for {folder_name_1}: statistic={normality_test_1.statistic:.5f}, p-value={normality_test_1.pvalue:.5f}")
     metrics_logger.info(normal_status_1)
     
-    metrics_logger.info(f"\n{test_name_2} Test for Model {model_idx_2 + 1}: statistic={normality_test_2.statistic:.5f}, p-value={normality_test_2.pvalue:.5f}")
+    metrics_logger.info(f"\n{test_name_2} Test for {folder_name_2}: statistic={normality_test_2.statistic:.5f}, p-value={normality_test_2.pvalue:.5f}")
     metrics_logger.info(normal_status_2)
 
     metrics_logger.info("\n" + "="*50)
@@ -705,8 +727,8 @@ def main():
 
     logger_common_symbol_length = 50
     new_line_char_lim = 50
-    message1 = f"Model {model_idx_1 + 1} has the best chance replicating the reference!"
-    message2 = f"Model {model_idx_2 + 1} has the best chance replicating the reference!"
+    message1 = f"{folder_name_1} has the best chance replicating the reference!"
+    message2 = f"{folder_name_2} has the best chance replicating the reference!"
     message3 = "Model determination is mixed, check individual scores, or the figures, to help you decide!"
     message4 = "No Model has a definitive outcome!"
     formatted_message1 = insert_newlines(message1, new_line_char_lim)
@@ -720,50 +742,50 @@ def main():
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
     main_logger.info("Uniform Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(uniform_score_1)}")
-    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(uniform_score_2)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(uniform_score_1)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(uniform_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
     main_logger.info("Optimized Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(optimized_score_1)}")
-    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(optimized_score_2)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(optimized_score_1)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(optimized_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
     main_logger.info("Weighted Rank Sum-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(weighted_rank_sum_score_1)}")
-    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(weighted_rank_sum_score_2)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(weighted_rank_sum_score_1)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(weighted_rank_sum_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
     main_logger.info("Inverse Variance-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(inverse_variance_score_1)}")
-    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(inverse_variance_score_2)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(inverse_variance_score_1)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(inverse_variance_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
     main_logger.info("Analytic Hierarchy Process-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(ahp_score_1)}")
-    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(ahp_score_2)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(ahp_score_1)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(ahp_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
     main_logger.info("Robust Principal Component Analysis-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(robust_pca_score_1)}")
-    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(robust_pca_score_2)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(robust_pca_score_1)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(robust_pca_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
     main_logger.info("``Meat-N-Potatoes``-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(mnp_score_1)}")
-    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(mnp_score_2)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(mnp_score_1)}")
+    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(mnp_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
     main_logger.info("Mean General Accuracy Scores")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"Mean General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(average_score_1)}")
-    main_logger.info(f"Mean General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(average_score_2)}")
+    main_logger.info(f"Mean General Accuracy Score for {folder_name_1}: {round_and_format(average_score_1)}")
+    main_logger.info(f"Mean General Accuracy Score for {folder_name_2}: {round_and_format(average_score_2)}")
 
     main_logger.info("\n" + symbol_separator2 * logger_common_symbol_length)
     main_logger.info("Two-Model Direct Comparison")
@@ -772,9 +794,9 @@ def main():
     better_model_idx = model_idx_1 if (average_score_1 < average_score_2) else model_idx_2
     better_average_score = average_score_1 if (average_score_1 < average_score_2) else average_score_2
     
-    main_logger.info(f"Model {model_idx_1 + 1} won {wins_1}/7 methods")
-    main_logger.info(f"Model {model_idx_2 + 1} won {wins_2}/7 methods")
-    main_logger.info(f"Model {better_model_idx + 1} has the best MGAS of: {better_average_score:.4f}")
+    main_logger.info(f"{folder_name_1} won {wins_1}/7 methods")
+    main_logger.info(f"{folder_name_2} won {wins_2}/7 methods")
+    main_logger.info(f"{folder_name_1 if better_model_idx == model_idx_1 else folder_name_2} has the best MGAS of: {better_average_score:.4f}")
     
     if average_score_1 < average_score_2 and wins_1 > wins_2:
         main_logger.info("\n" + formatted_message1)
@@ -795,14 +817,15 @@ def main():
         comparison_results, win_counts = round_robin_comparisons(model_dirs)
 
         if len(model_dirs) > 3:
-            top_winner = report_top_winners(win_counts, top_n=3, logger=main_logger)
+            top_winner = report_top_winners(win_counts, top_n=3, logger=main_logger, model_dirs=model_dirs)
         else:
             main_logger.info("\nWin Counts for each model:")
             for model_index, count in win_counts.items():
-                main_logger.info(f"Model {model_index + 1}: Wins = {count}")
+                folder_name = os.path.basename(model_dirs[model_index])
+                main_logger.info(f"{folder_name}: Wins = {count}")
             top_winner = max(win_counts, key=win_counts.get)
 
-        main_logger.info(f"\nModel {top_winner + 1} is the Tournament winner!")
+        main_logger.info(f"\n{os.path.basename(model_dirs[top_winner])} is the Tournament winner!")
 
     # Writing log content to the metric log file
     with open(metric_log_file, "a") as f:
