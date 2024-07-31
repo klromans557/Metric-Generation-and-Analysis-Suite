@@ -449,10 +449,20 @@ def perform_comparison(dir_model_1, dir_model_2):
 
     return average_score_1, average_score_2, uniform_weights, optimized_weights, weighted_rank_sum_weights, inverse_variance_weights, ahp_weights, robust_pca_weights, mnp_weights
 
+# Only top winners of Round-Robin are reported
+def report_top_winners(win_counts, top_n=3, logger=None):
+    sorted_win_counts = sorted(win_counts.items(), key=lambda item: item[1], reverse=True)
+    if logger:
+        logger.info("Top Winners:")
+        for i, (model_index, count) in enumerate(sorted_win_counts[:top_n]):
+            logger.info(f"Model {model_index + 1}: Wins = {count}")
+    return sorted_win_counts[0][0]  # Return the index of the top winner
+
 # Defines the Round-Robin tournament style
 def round_robin_comparisons(model_dirs):
     num_models = len(model_dirs)
     comparison_results = {i: [] for i in range(num_models)}
+    win_counts = {i: 0 for i in range(num_models)}
 
     for i in range(num_models):
         for j in range(i + 1, num_models):
@@ -465,7 +475,12 @@ def round_robin_comparisons(model_dirs):
             if not np.isnan(agas_2).any():
                 comparison_results[j].append(agas_2)
 
-    return comparison_results
+            if agas_1 < agas_2:
+                win_counts[i] += 1
+            elif agas_2 < agas_1:
+                win_counts[j] += 1
+
+    return comparison_results, win_counts
 
 # ===== FUNCTION ZOO =======================================
 
@@ -688,8 +703,8 @@ def main():
 
     # SCORES =========================
 
-    logger_common_symbol_length = 56
-    new_line_char_lim = 56
+    logger_common_symbol_length = 50
+    new_line_char_lim = 50
     message1 = f"Model {model_idx_1 + 1} has the best chance replicating the reference!"
     message2 = f"Model {model_idx_2 + 1} has the best chance replicating the reference!"
     message3 = "Model determination is mixed, check individual scores, or the figures, to help you decide!"
@@ -703,52 +718,52 @@ def main():
     symbol_separator2 = "="
 
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Accuracy Scores - Uniform Weights")
+    main_logger.info("Uniform Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(uniform_score_1)}")
-    main_logger.info(f"Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(uniform_score_2)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(uniform_score_1)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(uniform_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Accuracy Scores - Optimized Weights")
+    main_logger.info("Optimized Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(optimized_score_1)}")
-    main_logger.info(f"Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(optimized_score_2)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(optimized_score_1)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(optimized_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Accuracy Scores - Weighted Rank Sum Weights")
+    main_logger.info("Weighted Rank Sum-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(weighted_rank_sum_score_1)}")
-    main_logger.info(f"Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(weighted_rank_sum_score_2)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(weighted_rank_sum_score_1)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(weighted_rank_sum_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Accuracy Scores - Inverse Variance Weights")
+    main_logger.info("Inverse Variance-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(inverse_variance_score_1)}")
-    main_logger.info(f"Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(inverse_variance_score_2)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(inverse_variance_score_1)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(inverse_variance_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Accuracy Scores - Analytic Hierarchy Process Weights")
+    main_logger.info("Analytic Hierarchy Process-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(ahp_score_1)}")
-    main_logger.info(f"Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(ahp_score_2)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(ahp_score_1)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(ahp_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Accuracy Scores - R_Principal Component Analysis Weights")
+    main_logger.info("Robust Principal Component Analysis-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(robust_pca_score_1)}")
-    main_logger.info(f"Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(robust_pca_score_2)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(robust_pca_score_1)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(robust_pca_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Accuracy Scores - ``Meat-N-Potatoes`` Weights")
+    main_logger.info("``Meat-N-Potatoes``-Based Weights")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(mnp_score_1)}")
-    main_logger.info(f"Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(mnp_score_2)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(mnp_score_1)}")
+    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(mnp_score_2)}")
 
     main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("General Accuracy Scores")
+    main_logger.info("Mean General Accuracy Scores")
     main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(average_score_1)}")
-    main_logger.info(f"General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(average_score_2)}")
+    main_logger.info(f"Mean General Accuracy Score for Model {model_idx_1 + 1}: {round_and_format(average_score_1)}")
+    main_logger.info(f"Mean General Accuracy Score for Model {model_idx_2 + 1}: {round_and_format(average_score_2)}")
 
     main_logger.info("\n" + symbol_separator2 * logger_common_symbol_length)
     main_logger.info("Two-Model Direct Comparison")
@@ -759,7 +774,7 @@ def main():
     
     main_logger.info(f"Model {model_idx_1 + 1} won {wins_1}/7 methods")
     main_logger.info(f"Model {model_idx_2 + 1} won {wins_2}/7 methods")
-    main_logger.info(f"Model {better_model_idx + 1} has the best GAS of: {better_average_score:.4f}")
+    main_logger.info(f"Model {better_model_idx + 1} has the best MGAS of: {better_average_score:.4f}")
     
     if average_score_1 < average_score_2 and wins_1 > wins_2:
         main_logger.info("\n" + formatted_message1)
@@ -771,21 +786,23 @@ def main():
         main_logger.info("\n" + formatted_message4)
     
     main_logger.info("\n" + symbol_separator2 * logger_common_symbol_length)
-    main_logger.info("Multi-Model Round-Robin")
+    main_logger.info("Multi-Model Round-Robin Tournament")
     main_logger.info(symbol_separator2 * logger_common_symbol_length)
 
-    comparison_results = round_robin_comparisons(model_dirs)
+    if len(model_dirs) < 3:
+        main_logger.info("Not enough models, please see Direct Comparison!")
+    else:
+        comparison_results, win_counts = round_robin_comparisons(model_dirs)
 
-    for model_index, scores in comparison_results.items():
-        valid_scores = [score for score in scores if not np.isnan(score).any()]
-        if valid_scores:
-            average_agas = np.mean(valid_scores)
-            main_logger.info(f"Model {model_index + 1}: Mean General Accuracy Score = {average_agas:.4f}")
+        if len(model_dirs) > 3:
+            top_winner = report_top_winners(win_counts, top_n=3, logger=main_logger)
+        else:
+            main_logger.info("\nWin Counts for each model:")
+            for model_index, count in win_counts.items():
+                main_logger.info(f"Model {model_index + 1}: Wins = {count}")
+            top_winner = max(win_counts, key=win_counts.get)
 
-    valid_comparisons = {k: v for k, v in comparison_results.items() if v}
-
-    best_model_index = min(valid_comparisons, key=lambda k: np.mean([score for score in valid_comparisons[k] if not np.isnan(score).any()]))
-    main_logger.info("\n" + f"Model {best_model_index + 1} has the best MGAS of: {np.mean([score for score in valid_comparisons[best_model_index] if not np.isnan(score).any()]):.4f}")
+        main_logger.info(f"\nModel {top_winner + 1} is the Tournament winner!")
 
     # Writing log content to the metric log file
     with open(metric_log_file, "a") as f:
