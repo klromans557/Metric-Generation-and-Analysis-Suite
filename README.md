@@ -25,6 +25,7 @@ Made "for fun", and shared completely for free to those who love GenAI.
 - [Changelog](#changelog)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Methodology](#methodology)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
