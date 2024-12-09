@@ -5,7 +5,7 @@ Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories f
 A Python script I designed to help me analyze large datasets of face-embedding distances, determining a generalized accuracy score based on various statistical methods. This script creates for (at least) two folders a set of facial similarity metric data, contained as lists of values (e.g. \[1,2,3,...\]) for each image, 
 and calculates multiple statistical metrics and visualizes the results. 
 
-The intention is to use the scripts to compare two Stable Diffusion models by analyzing the L2_Norm, Euclidean, and/or Cosine facial-embed distances (one-type at a time, L2_Norm used in example data) 
+The intention is to use the scripts to compare two Generative AI image models (cf. Stable Diffusion) by analyzing the L2_Norm, Euclidean, and/or Cosine facial-embed distances (one-type at a time, L2_Norm used in example data) 
 of large sets of randomly generated images against a finite set of reference images of the trained subject. 
 Such a comparison can be crucial in determining the effect of a single change in training methodology and its overall effect on model output; for example, seeing the effect of changing the Loss Weight function between 'Constant' and 'Min_SNR_Gamma' on what is otherwise the same dataset and hyperparameters. 
 Ultimately, the success of a model is determined by its ability to reliably reproduce the likeness of the trained subject, and this script is my first attempt to quantitatively address issues related to that.
