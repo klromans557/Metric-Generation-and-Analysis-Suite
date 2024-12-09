@@ -169,7 +169,11 @@ class ScriptRunnerApp(tk.Tk):
             with open(output_stats_path, 'w') as output_stats_file:
                 output_stats_file.write('')
 
-        command = ['python', script_name]
+        # Fix local venv assignment
+        #command = ['python', script_name]
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        venv_python = os.path.join(script_dir, 'venv', 'Scripts', 'python.exe')
+        command = [venv_python, script_name]
 
         env = os.environ.copy()
         env['IMAGES_DIR'] = self.images_dir.get()

@@ -30,29 +30,30 @@ IF ERRORLEVEL 1 (
 )
 
 REM Check if shape_predictor_5_face_landmarks.dat exists
-if exist "DLIB\shape_predictor_5_face_landmarks.dat" (
+if exist "%DLIB_DIR%\shape_predictor_5_face_landmarks.dat" (
     echo shape_predictor_5_face_landmarks.dat already exists. Skipping download.
 ) else (
-    echo Downloading shape_predictor_5_face_landmarks.dat...
-    curl -L -o "DLIB\shape_predictor_5_face_landmarks.dat" "https://huggingface.co/matt3ounstable/dlib_predictor_recognition/resolve/main/shape_predictor_5_face_landmarks.dat?download=true"
-    if %errorlevel% neq 0 (
-        echo Error: Failed to download shape_predictor_5_face_landmarks.dat.
-        pause
-        exit /b %errorlevel%
-    )
+    set DOWNLOAD_NEEDED=1
 )
 
 REM Check if dlib_face_recognition_resnet_model_v1.dat exists
-if exist "DLIB\dlib_face_recognition_resnet_model_v1.dat" (
+if exist "%DLIB_DIR%\dlib_face_recognition_resnet_model_v1.dat" (
     echo dlib_face_recognition_resnet_model_v1.dat already exists. Skipping download.
 ) else (
-    echo Downloading dlib_face_recognition_resnet_model_v1.dat...
-    curl -L -o "DLIB\dlib_face_recognition_resnet_model_v1.dat" "https://huggingface.co/matt3ounstable/dlib_predictor_recognition/resolve/main/dlib_face_recognition_resnet_model_v1.dat?download=true"
+    set DOWNLOAD_NEEDED=1
+)
+
+REM Run the combined Python script if any file is missing
+if defined DOWNLOAD_NEEDED (
+    echo Downloading files...
+    python HF_model_download.py
     if %errorlevel% neq 0 (
-        echo Error: Failed to download dlib_face_recognition_resnet_model_v1.dat.
+        echo Error: Failed to download one or more files.
         pause
         exit /b %errorlevel%
     )
+) else (
+    echo All files are already present. No downloads needed.
 )
 
 REM Separator and final message
