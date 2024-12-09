@@ -31,6 +31,16 @@ Made "for fun", and shared completely for free to those who love GenAI.
 
 ## Changelog
 
+### [2.4] - 2024/12/09
+After taking a break I came back and found some issues while testing a new model under relatively fresh install conditions.
+
+### Added:
+- Included the `HF_model_download.py` to handle the download of the two face-recognition DAT files from HuggingFace. This now replaces the janky curl method in the `install_MGAS.bat` file.
+- Added huggingface_hub to the `requirements.txt`.
+
+### Fixed:
+- Fixed how the scripts were calling the local venv. Although the venv is activated when the GUI starts, the `gui.py` script itself was not enforcing this when calling the other scripts. Now, the `gui.py` script properly ensures that the venv python is used in the `run_script` method.
+
 ### [2.3] - 2024/07/31
 
 #### Changed:
@@ -88,7 +98,7 @@ _First release._
 
 ## Installation
 
-1. Please have Python 3.7, or later, installed. You can download it from [python.org](https://www.python.org/downloads/).
+1. Please have Python 3.7, or later, installed (I use 3.10.11, as do many other AI apps). You can download it from [python.org](https://www.python.org/downloads/) in the "Looking for a specific release?" section by scrolling down (3.10.11 at release date, April 5, 2023).
 
 2. Clone the repository and go into the created folder:
     ```sh
