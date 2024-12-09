@@ -167,7 +167,7 @@ With the metrics at hand, we can now use them in various statistical weighting s
 1. Uniform Weights: Each metric is treated equally with the same weight value (1/6 ~ 0.167) assigned to all. This is the simplest approach as it is just a basic average.
 2. Optimized Weights: These weights were calculated based on the order of import of the metrics and to reduce redundancy from metrics that contain similar information. The script used to optimize is located in the _EXTRAS directory.
 3. Weighted Rank Sum Weights: Metrics are ranked based on their values for each dataset, and then the ranks are weighted. This scheme emphasizes the relative position of metrics rather than raw values, making it less sensitive to extreme values and outliers.
-4. Inverse Variance Sum: Metrics with lower variability (variance) are given higher weights since they are considered more reliable. This gives stable metrics are larger impact on the analysis.
+4. Inverse Variance Sum: Metrics with lower variability (variance) are given higher weights since they are considered more reliable. This gives stable metrics a larger impact on the analysis.
 5. Analytic Hierarchy Process weights: A structured method where metrics are compared pairwise to determine their relative importance.
 6. Robust Principal Component Weights: This statistical technique focuses on combinations of metrics that cover the most variation in the data. The weights are derived from these combinations, focusing on capturing the key features of the dataset while reducing noise.
 7. "Meat-N-Potatoes" Weights: My sanity check weights which only use the Median and P90 weighted equally (1/2 = 0.5).
