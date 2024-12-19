@@ -29,9 +29,9 @@ IF ERRORLEVEL 1 (
     exit /B
 )
 
-REM Check if shape_predictor_5_face_landmarks.dat exists
-if exist "%DLIB_DIR%\shape_predictor_5_face_landmarks.dat" (
-    echo shape_predictor_5_face_landmarks.dat already exists. Skipping download.
+REM Check if shape_predictor_68_face_landmarks.dat exists
+if exist "%DLIB_DIR%\shape_predictor_68_face_landmarks.dat" (
+    echo shape_predictor_68_face_landmarks.dat already exists. Skipping download.
 ) else (
     set DOWNLOAD_NEEDED=1
 )

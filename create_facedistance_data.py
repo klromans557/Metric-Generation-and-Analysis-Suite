@@ -4,6 +4,7 @@ import sys
 import numpy as np
 from PIL import Image
 import dlib
+import cv2
 from scipy.spatial.distance import cosine, euclidean
 import numpy.linalg as la
 import multiprocessing
@@ -29,47 +30,104 @@ from multiprocessing import Pool
 # ===== LOGGING ============================================
 # Custom logging function to create information for 'process_log' TXT and terminal window output
 # Update the log function to use the LOGS folder
-def log(message, log_file):
-    print(message)
-    with open(log_file, 'a') as f:
-        f.write(message + '\n')
+# Define a constant for the logging level
+LOG_LEVEL = "INFO"  # Change this to DEBUG, INFO, WARNING, ERROR, or CRITICAL as needed
+# Enhanced logging with verbosity levels
+def setup_logging():
+    log_file = os.path.join(os.getcwd(), 'LOGS', 'process_log.txt')
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
-def is_directory_empty(directory):
-    return not any(os.scandir(directory))
+    logging.basicConfig(
+        filename=log_file,
+        level=getattr(logging, LOG_LEVEL.upper(), logging.INFO),
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+
+    # Log to console as well
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(getattr(logging, LOG_LEVEL.upper(), logging.INFO))
+    console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+    logging.getLogger().addHandler(console_handler)
+
+def log(message, level="INFO"):
+    # Use the specified log level (default is INFO)
+    getattr(logging, level.lower(), logging.info)(message)
+
 # ===== LOGGING ============================================
 
 # ===== CLASSES ============================================
 class DLib:
-    def __init__(self, shape_predictor_path, face_recognition_model_path):
+    def __init__(self, shape_predictor_68_path, face_recognition_model_path):
         self.detector = dlib.get_frontal_face_detector()
-        if not os.path.exists(shape_predictor_path):
-            raise FileNotFoundError(f"The file {shape_predictor_path} does not exist.")
+
+        if not os.path.exists(shape_predictor_68_path):
+            raise FileNotFoundError(f"68-point model not found: {shape_predictor_68_path}")
+        self.shape_predictor_68 = dlib.shape_predictor(shape_predictor_68_path)
+
         if not os.path.exists(face_recognition_model_path):
-            raise FileNotFoundError(f"The file {face_recognition_model_path} does not exist.")
-        self.shape_predictor_path = shape_predictor_path
-        self.face_recognition_model_path = face_recognition_model_path
-        self.shape_predictor = dlib.shape_predictor(self.shape_predictor_path)
-        self.face_rec_model = dlib.face_recognition_model_v1(self.face_recognition_model_path)
+            raise FileNotFoundError(f"Face recognition model not found: {face_recognition_model_path}")
+        self.face_rec_model = dlib.face_recognition_model_v1(face_recognition_model_path)
+
+    def align_face(self, image, shape):
+        try:
+            face_chip = dlib.get_face_chip(image, shape, size=150)
+            log("Face alignment and preprocessing successful.")
+            return face_chip, shape
+        except Exception as e:
+            log(f"Error during alignment and preprocessing: {e}")
+            return None, None
 
     def get_embedding(self, image):
-        dets = self.detector(image, 1)
-        if dets:
-            shape = self.shape_predictor(image, dets[0])
-            embedding = np.array(self.face_rec_model.compute_face_descriptor(image, shape))
-            norm = np.linalg.norm(embedding)
-            if norm == 0:
-                return embedding
-            return embedding / norm
-        return None
+        try:
+            dets = self.detector(image, 1)
+            log(f"Detected {len(dets)} faces.")
+            if dets:
+                shape = self.shape_predictor_68(image, dets[0])
+                aligned_image, _ = self.align_face(image, shape)
+                if aligned_image is not None:
+                    embedding = np.array(self.face_rec_model.compute_face_descriptor(aligned_image))
+                    if embedding.size > 0:
+                        log("Successfully computed embedding.")
+                        return embedding / (np.linalg.norm(embedding) or 1)
+            log("Failed to produce valid embedding.")
+            return None
+        except Exception as e:
+            log(f"Error during embedding computation: {e}.")
+            return None
+
 # ===== CLASSES ============================================
 
+# ===== GLOBAL INITIALIZER FOR MULTIPROCESSING =============
+_global_dlib = None
+
+def init_worker(shape_predictor_68_path, face_recognition_model_path):
+    global _global_dlib
+    if _global_dlib is None:
+        _global_dlib = DLib(
+            shape_predictor_68_path,
+            face_recognition_model_path
+        )
+
+# ===== GLOBAL INITIALIZER FOR MULTIPROCESSING =============
+
 # ===== FUNCTION ZOO =======================================
-def get_face_embedding(image_path, model_class, shape_predictor_path, face_recognition_model_path):
-    model = model_class(shape_predictor_path, face_recognition_model_path)
-    image = Image.open(image_path).convert('RGB')
-    image = np.array(image)
-    embedding = model.get_embedding(image)
-    return embedding
+def get_face_embedding(image_path, shape_predictor_68_path=None, face_recognition_model_path=None):
+    global _global_dlib
+    if _global_dlib is None and shape_predictor_68_path and face_recognition_model_path:
+        _global_dlib = DLib(shape_predictor_68_path, face_recognition_model_path)
+
+    try:
+        image = np.array(Image.open(image_path).convert('RGB'))
+    except Exception as e:
+        log(f"Failed to load image {image_path}: {e}")
+        return None
+
+    try:
+        embedding = _global_dlib.get_embedding(image)
+        return embedding
+    except Exception as e:
+        log(f"Error processing {image_path}: {e}")
+        return None
 
 def compute_distance(embedding1, embedding2, metric):
     if metric == "cosine":
@@ -79,144 +137,204 @@ def compute_distance(embedding1, embedding2, metric):
     elif metric == "L2_norm":
         return la.norm(embedding1 - embedding2)
     else:
-        raise ValueError("Unsupported distance metric")
+        raise ValueError(f"Unsupported metric: {metric}")
 
 def validate_num_processes(num_processes):
     max_processes = (multiprocessing.cpu_count() // 2) + 2
     if num_processes > max_processes:
         raise ValueError(f"Number of processes ({num_processes}) exceeds the number of recommended ``safe`` CPU cores/threads ({max_processes}).")
 
+def validate_dlib_models(dlib_folder):
+    required_files = [
+        'shape_predictor_68_face_landmarks.dat',
+        'dlib_face_recognition_resnet_model_v1.dat'
+    ]
+
+    for file_name in required_files:
+        if not os.path.exists(os.path.join(dlib_folder, file_name)):
+            raise FileNotFoundError(f"Required DLib file not found: {file_name}")
+
 def process_single_image(args):
-    image_path, ref_embedding, metric, model_class, shape_predictor_path, face_recognition_model_path = args
-    embedding = get_face_embedding(image_path, model_class, shape_predictor_path, face_recognition_model_path)
-    if embedding is not None:
-        return compute_distance(ref_embedding, embedding, metric)
-    return None
-
-def process_images(dir_images, dir_references, dir_output, model_class, metric, shape_predictor_path, face_recognition_model_path, num_processes, log_file):
-    log("Starting the image processing...", log_file)
-
     try:
-        if not os.path.exists(dir_output):
-            os.makedirs(dir_output)
+        (image_path, ref_embedding, metric, shape_predictor_68_path, 
+         face_recognition_model_path, output_subdir, ref_name) = args
 
+        embedding = get_face_embedding(
+            image_path,
+            shape_predictor_68_path=shape_predictor_68_path,
+            face_recognition_model_path=face_recognition_model_path,
+        )
+        if embedding is None:
+            log(f"Failed to compute embedding for image {image_path}")
+            return None
+
+        if ref_embedding is None:
+            log(f"Reference embedding is None for image {image_path}")
+            return None
+
+        # Compute the distance
+        distance = compute_distance(ref_embedding, embedding, metric)
+        log(f"Computed distance for {image_path} with {ref_name}: {distance}")
+
+        # Define the output file path
+        output_file = os.path.join(output_subdir, f"{ref_name}_distances.txt")
+
+        # Ensure the output file remains a Python list
+        try:
+            # Load existing data if the file exists
+            if os.path.exists(output_file):
+                with open(output_file, 'r') as f:
+                    existing_data = eval(f.read())  # Safely parse the file content as Python list
+            else:
+                existing_data = []
+
+            # Append the new result
+            existing_data.append(distance)
+
+            # Write the updated list back to the file
+            with open(output_file, 'w') as f:
+                f.write(str(existing_data))  # Write as a valid Python list
+        except Exception as e:
+            log(f"Error handling the output file {output_file}: {e}")
+            return None
+
+        return distance
+    except Exception as e:
+        log(f"Error processing {image_path}: {e}")
+        return None
+
+def process_images(
+    dir_images, 
+    dir_references, 
+    dir_output, 
+    model_class, 
+    metric, 
+    shape_predictor_68_path, 
+    face_recognition_model_path, 
+    num_processes
+):
+    log("Starting image processing...")
+    try:
+        os.makedirs(dir_output, exist_ok=True)
+        ref_embeddings = {}
+
+        # Step 1: Compute embeddings for reference images
+        for ref_name in os.listdir(dir_references):
+            try:
+                ref_path = os.path.join(dir_references, ref_name)
+                if ref_name.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif')):
+                    ref_embedding = get_face_embedding(
+                        ref_path, 
+                        shape_predictor_68_path,
+                        face_recognition_model_path
+                    )
+                    if ref_embedding is not None:
+                        ref_embeddings[ref_name] = ref_embedding
+                    else:
+                        log(f"Failed to compute embedding for reference image {ref_name}")
+            except Exception as e:
+                log(f"Failed to process reference image {ref_name}: {e}")
+                
+        log("=" * 50)
+        log(f"Number of reference embeddings: {len(ref_embeddings)}")
+        log("=" * 50)
+
+        # Step 2: Create tasks for all image-reference pairs
+        tasks = []
+        processed_folders = 0
+        processed_files = 0
+        
         for subdir_name in os.listdir(dir_images):
             subdir_path = os.path.join(dir_images, subdir_name)
             if os.path.isdir(subdir_path):
-                subdir_output_path = os.path.join(dir_output, subdir_name)
-                if not os.path.exists(subdir_output_path):
-                    os.makedirs(subdir_output_path)
-                output_files_generated = 0
+                output_subdir = os.path.join(dir_output, subdir_name)
+                os.makedirs(output_subdir, exist_ok=True)
+                processed_folders += 1
 
-                for ref_image_name in os.listdir(dir_references):
-                    log(f"Start reference: {ref_image_name}; folder: {subdir_name}", log_file)
+                for ref_name, ref_embedding in ref_embeddings.items():
+                    image_paths = [
+                        os.path.join(subdir_path, img)
+                        for img in os.listdir(subdir_path)
+                        if img.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif'))
+                    ]
+                    tasks.extend([
+                        (img_path, ref_embedding, metric, shape_predictor_68_path, face_recognition_model_path, output_subdir, ref_name)
+                        for img_path in image_paths
+                    ])
 
-                    ref_image_path = os.path.join(dir_references, ref_image_name)
-                    ref_embedding = get_face_embedding(ref_image_path, model_class, shape_predictor_path, face_recognition_model_path)
-                    if ref_embedding is None:
-                        continue
+        # Step 3: Process tasks in parallel
+        with Pool(num_processes, initializer=init_worker, initargs=(shape_predictor_68_path, face_recognition_model_path)) as pool:
+            for _ in pool.imap_unordered(process_single_image, tasks):
+                processed_files += 1  # Increment count for each processed file
 
-                    image_paths = [os.path.join(subdir_path, image_name) for image_name in os.listdir(subdir_path)]
-                    distances = []
-
-                    with Pool(processes=num_processes) as pool:
-                        args = [(image_path, ref_embedding, metric, model_class, shape_predictor_path, face_recognition_model_path) for image_path in image_paths]
-                        results = pool.map(process_single_image, args)
-                        distances = [result for result in results if result is not None]
-
-                    output_file = os.path.join(subdir_output_path, f"{ref_image_name.split('.')[0]}_distances.txt")
-                    with open(output_file, 'w') as f:
-                        f.write(str(distances))
-                    output_files_generated += 1
-
-                    log(f"End reference: {ref_image_name}; folder: {subdir_name}", log_file)
-
-                log(f"{'=' * 50}\n"f"Finished all references for folder: {subdir_name}\n"f"Generated {output_files_generated} output TXT files.\n"f"{'=' * 50}", log_file)
-
+        # Log the results
+        log("=" * 50)
+        log(f"Total processed folders: {processed_folders}")
+        log(f"Total processed TXT files: {processed_files}")
+        log("=" * 50)
+        log("Image processing completed.")
     except Exception as e:
-        error_message = f"An error occurred during image processing: {str(e)}"
-        log(error_message, log_file)
-        sys.exit(error_message)
+        log(f"Error during processing: {e}")
+
 # ===== FUNCTION ZOO =======================================
 
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX [[[ MAIN ]]] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 def main():
     try:
+        # Set up logging with the specified verbosity
+        setup_logging()
+        log(f"Logging initialized at {LOG_LEVEL} level.")
+        
         script_dir = os.path.dirname(os.path.abspath(__file__))
         logs_dir = os.path.join(script_dir, 'LOGS')
-        
-        # Ensure the LOGS directory exists
-        if not os.path.exists(logs_dir):
-            os.makedirs(logs_dir)
-        
-        log_file = os.path.join(logs_dir, 'process_log.txt')
-        
-        # Clear the log file at the start of each run
-        with open(log_file, 'w') as f:
-            f.write('Starting new run...\n')
-         
+        os.makedirs(logs_dir, exist_ok=True)
+
         # Validate number of processes
         try:
             num_processes = int(os.getenv('NUM_PROCESSES', 2))
             validate_num_processes(num_processes)
         except ValueError as e:
-            log(str(e), log_file)
+            log(str(e))
             sys.exit(str(e))
 
-        # Paths to model files for DLib; place these .dat files in the DLIB directory in order for the script to find them
-        # ¡NOTE! Use these HuggingFace links: (https://huggingface.co/matt3ounstable/dlib_predictor_recognition/resolve/main/shape_predictor_5_face_landmarks.dat?download=true) 
-        # ¡NOTE! and (https://huggingface.co/matt3ounstable/dlib_predictor_recognition/resolve/main/dlib_face_recognition_resnet_model_v1.dat?download=true)
-        # Thanks to Matteo Spinelli (a.k.a cubiq) for hosting the above files on HF, so that I can continue to be lazy! :)
+        # Paths to model files for DLib
         dlib_folder = os.path.join(script_dir, 'DLIB')
-        shape_predictor_path = os.path.join(dlib_folder, 'shape_predictor_5_face_landmarks.dat')
+        validate_dlib_models(dlib_folder)
+
+        dir_images = os.path.join(script_dir, 'DIR', 'images')
+        dir_references = os.path.join(script_dir, 'DIR', 'references')
+        dir_output = os.path.join(script_dir, 'DIR', 'output')
+
+        shape_predictor_68_path = os.path.join(dlib_folder, 'shape_predictor_68_face_landmarks.dat')
         face_recognition_model_path = os.path.join(dlib_folder, 'dlib_face_recognition_resnet_model_v1.dat')
 
-        # Read directories and options from environment variables or use defaults
-        dir_images = os.getenv('IMAGES_DIR', os.path.join(os.getcwd(), 'DIR', 'images'))
-        dir_references = os.getenv('REFERENCES_DIR', os.path.join(os.getcwd(), 'DIR', 'references'))
-        dir_output = os.getenv('OUTPUT_DIR', os.path.join(os.getcwd(), 'DIR', 'output'))
-        num_processes = int(os.getenv('NUM_PROCESSES', 2))
+        if not os.path.exists(dir_images):
+            raise FileNotFoundError(f"Images directory not found: {dir_images}")
+        if not os.path.exists(dir_references):
+            raise FileNotFoundError(f"References directory not found: {dir_references}")
+        if not os.path.exists(shape_predictor_68_path):
+            raise FileNotFoundError(f"68-point landmark model not found: {shape_predictor_68_path}")
+        if not os.path.exists(face_recognition_model_path):
+            raise FileNotFoundError(f"Face recognition model not found: {face_recognition_model_path}")
 
-        print(f"IMAGES_DIR: {os.getenv('IMAGES_DIR')}")
-        print(f"REFERENCES_DIR: {os.getenv('REFERENCES_DIR')}")
-        print(f"OUTPUT_DIR: {os.getenv('OUTPUT_DIR')}")
-        print(f"GRAPH_WIDTH: {os.getenv('GRAPH_WIDTH')}")
-        print(f"GRAPH_HEIGHT: {os.getenv('GRAPH_HEIGHT')}")
-        print(f"NUM_PROCESSES: {os.getenv('NUM_PROCESSES')}")
+        log(f"Starting script with {num_processes} processes.")
 
-        # Check if directories are empty and log errors
-        if is_directory_empty(dlib_folder):
-            error_message = "Error: The DLIB directory is empty. Please add the .dat files."
-            log(error_message, log_file)
-            sys.exit(error_message)
+        process_images(
+            dir_images,
+            dir_references,
+            dir_output,
+            DLib,
+            "L2_norm",
+            shape_predictor_68_path,
+            face_recognition_model_path,
+            num_processes
+        )
 
-        if is_directory_empty(dir_images):
-            error_message = "Error: The images directory is empty."
-            log(error_message, log_file)
-            sys.exit(error_message)
-
-        if is_directory_empty(dir_references):
-            error_message = "Error: The references directory is empty."
-            log(error_message, log_file)
-            sys.exit(error_message)
-
-        # Define the distance metric to be used
-        distance_metric = "L2_norm"  # Default: "L2_norm"; Options: "cosine", "euclidean", "L2_norm"
-
-        # Do stuff!
-        model_class = DLib
-        log("Using DLib model.", log_file)
-        log(f"Script started using CPU.", log_file)
-        process_images(dir_images, dir_references, dir_output, model_class, distance_metric, shape_predictor_path, face_recognition_model_path, num_processes, log_file)
-        log("Script completed successfully.", log_file)
-        
+        log("Script execution completed successfully.")
     except Exception as e:
-        error_message = f"An error occurred in the main function: {str(e)}"
-        log(error_message, log_file)
-        sys.exit(error_message)
-    finally:
-        sys.stdout = sys.__stdout__
-        sys.stderr = sys.__stderr__
+        logging.error(f"Critical error in main(): {e}")
+        sys.exit(1)
+
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX [[[ MAIN ]]] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 if __name__ == "__main__":

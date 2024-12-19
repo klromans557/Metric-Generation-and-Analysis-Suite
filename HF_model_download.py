@@ -21,7 +21,7 @@ def main():
     if not os.path.exists(local_dir):
         os.makedirs(local_dir)
     
-    download_file(repo_id, "shape_predictor_5_face_landmarks.dat", local_dir)
+    download_file(repo_id, "shape_predictor_68_face_landmarks.dat", local_dir)
     download_file(repo_id, "dlib_face_recognition_resnet_model_v1.dat", local_dir)
 
 if __name__ == "__main__":
