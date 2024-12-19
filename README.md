@@ -28,7 +28,7 @@ Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories f
 
 ## Changelog
 
-###[2.5] - 2024/12/19
+### [2.5] - 2024/12/19
 This update focuses on properly implementing the facial recognition workflow from the methodology section and optimizing the parallel processing to increase speed.
 
 #### Added:
