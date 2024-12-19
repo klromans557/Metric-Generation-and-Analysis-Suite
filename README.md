@@ -1,14 +1,8 @@
 # Metric Generation and Analysis Suite
 
-Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories for more information, details, and results from three of my experiments using this suite of scripts. Also check out the associated Civitai article, [here](https://civitai.com/articles/6327/statistical-analysis-of-ai-models-an-overview-of-the-mgas-comparison-method-and-scripts)
+A set of Python scripts that I developed to help me train AI image models using large datasets of facial embedding data, determining a generalized accuracy score based on various statistical methods. Given at least two models represented by folders containing their generated images, these scripts create a set of facial similarity metric data as simple Python lists for each image. With this data a carefully selected set of statistical metrics and weighting schemes are used to generate the score, and a couple of plots are created to quickly visualize the results. 
 
-A Python script I designed to help me analyze large datasets of face-embedding distances, determining a generalized accuracy score based on various statistical methods. This script creates for (at least) two folders a set of facial similarity metric data, contained as lists of values (e.g. \[1,2,3,...\]) for each image, 
-and calculates multiple statistical metrics and visualizes the results. 
-
-The intention is to use the scripts to compare two Generative AI image models (cf. Stable Diffusion) by analyzing the L2_Norm, Euclidean, and/or Cosine facial-embed distances (one-type at a time, L2_Norm used in example data) 
-of large sets of randomly generated images against a finite set of reference images of the trained subject. 
-Such a comparison can be crucial in determining the effect of a single change in training methodology and its overall effect on model output; for example, seeing the effect of changing the Loss Weight function between 'Constant' and 'Min_SNR_Gamma' on what is otherwise the same dataset and hyperparameters. 
-Ultimately, the success of a model is determined by its ability to reliably reproduce the likeness of the trained subject, and this script is my first attempt to quantitatively address issues related to that.
+The intention is to use the scripts to compare two Generative AI image models (cf. Stable Diffusion) by analyzing large sets of randomly generated images against a finite set of reference images of the trained subject. Such a comparison can be crucial in determining the effect of a single change in training methodology and its overall effect on model output. For example, seeing the effect of changing the Loss Weight function between 'Constant' and 'Min_SNR_Gamma' on what is otherwise the same dataset and hyperparameters. Ultimately, the success of a model is determined by its ability to reliably reproduce the likeness of the trained subject, and this script is my first attempt to quantitatively address issues related to that.
 
 ¡NOTE! The repo now contains a GUI and script that can perform the similarity metric analysis without the need for any external apps/nodes/extensions; it is now self-contained!
 
@@ -17,6 +11,8 @@ Built with the help of GPT-4o; thanks Zedd! (>'.')>[<3]
 Feel free to use, share, and modify this suite to suit your needs.
 Made "for fun", and shared completely for free to those who love GenAI.
 <(˶ᵔᵕᵔ˶)>
+
+Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories for more information, details, and results from three of my experiments using this suite of scripts. Also check out the associated Civitai article, [here](https://civitai.com/articles/6327/statistical-analysis-of-ai-models-an-overview-of-the-mgas-comparison-method-and-scripts)
 
 ![screenshot](EXAMPLES/Example_Figures/Example_Figure_0_v2-3GUI.png)
 
@@ -32,14 +28,26 @@ Made "for fun", and shared completely for free to those who love GenAI.
 
 ## Changelog
 
+###[2.5] - 2024/12/19
+This update focuses on properly implementing the facial recognition workflow from the methodology section and optimizing the parallel processing to increase speed.
+
+#### Added:
+- Implemented the Alignment and Normalization steps through the `align_face` function along with DLib's `get_face_chip`. Faces are now properly preprocessed before the embeddings are calculated.
+- Included the 68-point landmark model for use in the Alignment step and increased accuracy. This now replaces the previously used 5-point model in all use cases.
+
+#### Fixed:
+- Fixed the absolute mess that the parallel processing functionalities in the `process_images` function loop was. This has significantly increased processing speed and improved CPU usage.
+- Fixed the BULK script to use alphanumerical sorting rather than lexicographical.
+- Improved logging and error reporting relevant to the `process_log.txt` file.
+  
 ### [2.4] - 2024/12/09
 After taking a break I came back and found some issues while testing a new model under relatively fresh install conditions.
 
-### Added:
+#### Added:
 - Included the `HF_model_download.py` to handle the download of the two face-recognition DAT files from HuggingFace. This now replaces the janky curl method in the `install_MGAS.bat` file.
 - Added huggingface_hub to the `requirements.txt`.
 
-### Fixed:
+#### Fixed:
 - Fixed how the scripts were calling the local venv. Although the venv is activated when the GUI starts, the `gui.py` script itself was not enforcing this when calling the other scripts. Now, the `gui.py` script properly ensures that the venv python is used in the `run_script` method.
 
 ### [2.3] - 2024/07/31
@@ -138,12 +146,12 @@ To use the script and analyze the face-distance data, follow these steps (see `P
 
 ### Facial Recognition
 
-The heart of the method relies on the similarity face-embedding distance data created by the face recognition models. Roughly speaking, the model finds 5 landmarks on the reference's face, i.e. Two eyes, one nose tip, and two mouth corners, and assigns a distance value (e.g. 0.3). The process unfolds as:
+The heart of the method relies on the similarity facial embedding distance data created by the face recognition models. Roughly speaking, the model finds 68 landmarks on the reference's face, i.e. eyes, nose tip, mouth corners, etc., and assigns a distance value (e.g. 0.3). The process unfolds as:
 
 1. Face Detection: The model first identifies the general region of the face, just like a bounding box.
 2. Landmark Detection: Then the landmarks are identified within the face region.
 3. Alignment: The face is then "aligned" using the landmarks. This step tries to account for various poses by adjusting faces to a standard forward-facing form. In other words, a tilted face is adjusted such that the eyes are horizontal and the face upright.
-4. Normalization: The aligned face is cropped & resized to fit a model-defined standard size (e.g. 112x112 pixels). This ensures uniform processing.
+4. Normalization: The aligned face is cropped & resized to fit a model-defined standard size (e.g. 150x150 pixels). This ensures uniform processing.
 5. Feature Extraction: The normalized face is then analyzed for unique features. These features then form a kind of "fingerprint" of the face which can be used for recognition.
 6. Recognition: Finally, the extracted features are compared to a known database of faces. In the case of MGAS, this database is made up of the reference images placed by the user. The system analyzes how similar the faces are and generates a distance value based on this association (e.g. 0.3). The lower the value the closer the tested image matches a given reference. This is the origin of the maxim, "Lower is better!"
 
@@ -203,7 +211,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [Matteo Spinelli](https://github.com/cubiq/ComfyUI_FaceAnalysis) for creating the ComfyUI custom node that I used as inspiration for the CREATE script
   and for hosting the DLib model files on HuggingFace.
-- [OpenAI](https://www.openai.com) for providing guidance and assistance in developing this project.
+- [OpenAI](https://www.openai.com) & [Alibaba Cloud](https://www.alibabacloud.com) for providing guidance and assistance in developing this project.
 - [GitHub](https://github.com) for hosting the repository.
 - [Dr. Furkan Gözükara](https://civitai.com/user/SECourses) for sharing his scripts through the SECourses Civitai, Patreon, associated Discord server and YouTube channel.
   These resources were invaluable to me during the development of this project and served as guides/templates for creating such scripts.
