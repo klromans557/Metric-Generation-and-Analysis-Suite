@@ -138,9 +138,8 @@ _First release._
     ```
 
 3. Install the required dependencies, directories, and models:
-
-  - Use the provided `install_MGAS.bat` file
-  - Installs required Python dependencies, empty directories, and DLib models (~ 100MB).
+   - Use the provided `install_MGAS.bat` file
+   - Installs required Python dependencies, empty directories, and DLib models (~ 100MB).
     
 ## Usage
 
