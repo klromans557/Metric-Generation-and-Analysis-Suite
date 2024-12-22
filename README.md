@@ -144,8 +144,6 @@ _First release._
 ## Usage
 
 To use the script and analyze the face-distance data, follow these steps (see `PLEASE_READ_ME.txt` files for more details):
-
-0. GitHub does not like empty directories, so please delete any text files called `DELETE_ME.txt` in the `DIR` folders.
    
 1. Use the provided `run_GUI.bat` file to open the GUI and use the scripts.
    
