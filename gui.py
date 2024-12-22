@@ -11,7 +11,7 @@ import tkinter.filedialog as filedialog
 class ScriptRunnerApp(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("reaper557's Metric Generation and Analysis Suite (M.G.A.S.)")
+        self.title("reaper557's Metric Generation and Analysis Suite (M.G.A.S.) - v2.6")
         self.geometry("750x1000")
         self.configure(bg='#7a7a7a')  # Change the background color of the main window
         

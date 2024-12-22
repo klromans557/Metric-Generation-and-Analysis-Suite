@@ -1,59 +1,362 @@
-Using DLib model.
-Script started using CPU.
-Starting the image processing...
-Processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmpp2M_K_25
-Finished processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmpp2M_K_25
-Processing reference image: ComfyUI-belle-22.png for folder: previews_dpmpp2M_K_25
-Finished processing reference image: ComfyUI-belle-22.png for folder: previews_dpmpp2M_K_25
-Processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmpp2M_K_25
-Finished processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmpp2M_K_25
-Processing reference image: ComfyUI-nami-39.png for folder: previews_dpmpp2M_K_25
-Finished processing reference image: ComfyUI-nami-39.png for folder: previews_dpmpp2M_K_25
-Processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmpp2M_K_25
-Finished processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmpp2M_K_25
-Finished processing all reference images for folder: previews_dpmpp2M_K_25. Generated 5 output TXT files.
-Processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmpp3MSDE_Exp_30
-Finished processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmpp3MSDE_Exp_30
-Processing reference image: ComfyUI-belle-22.png for folder: previews_dpmpp3MSDE_Exp_30
-Finished processing reference image: ComfyUI-belle-22.png for folder: previews_dpmpp3MSDE_Exp_30
-Processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmpp3MSDE_Exp_30
-Finished processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmpp3MSDE_Exp_30
-Processing reference image: ComfyUI-nami-39.png for folder: previews_dpmpp3MSDE_Exp_30
-Finished processing reference image: ComfyUI-nami-39.png for folder: previews_dpmpp3MSDE_Exp_30
-Processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmpp3MSDE_Exp_30
-Finished processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmpp3MSDE_Exp_30
-Finished processing all reference images for folder: previews_dpmpp3MSDE_Exp_30. Generated 5 output TXT files.
-Processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmppSDE_K_20
-Finished processing reference image: ComfyUI-aerith-06.png for folder: previews_dpmppSDE_K_20
-Processing reference image: ComfyUI-belle-22.png for folder: previews_dpmppSDE_K_20
-Finished processing reference image: ComfyUI-belle-22.png for folder: previews_dpmppSDE_K_20
-Processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmppSDE_K_20
-Finished processing reference image: ComfyUI-gwen-29.png for folder: previews_dpmppSDE_K_20
-Processing reference image: ComfyUI-nami-39.png for folder: previews_dpmppSDE_K_20
-Finished processing reference image: ComfyUI-nami-39.png for folder: previews_dpmppSDE_K_20
-Processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmppSDE_K_20
-Finished processing reference image: ComfyUI-zelda-59.png for folder: previews_dpmppSDE_K_20
-Finished processing all reference images for folder: previews_dpmppSDE_K_20. Generated 5 output TXT files.
-Processing reference image: ComfyUI-aerith-06.png for folder: previews_restart_K_40
-Finished processing reference image: ComfyUI-aerith-06.png for folder: previews_restart_K_40
-Processing reference image: ComfyUI-belle-22.png for folder: previews_restart_K_40
-Finished processing reference image: ComfyUI-belle-22.png for folder: previews_restart_K_40
-Processing reference image: ComfyUI-gwen-29.png for folder: previews_restart_K_40
-Finished processing reference image: ComfyUI-gwen-29.png for folder: previews_restart_K_40
-Processing reference image: ComfyUI-nami-39.png for folder: previews_restart_K_40
-Finished processing reference image: ComfyUI-nami-39.png for folder: previews_restart_K_40
-Processing reference image: ComfyUI-zelda-59.png for folder: previews_restart_K_40
-Finished processing reference image: ComfyUI-zelda-59.png for folder: previews_restart_K_40
-Finished processing all reference images for folder: previews_restart_K_40. Generated 5 output TXT files.
-Processing reference image: ComfyUI-aerith-06.png for folder: rand_woman
-Finished processing reference image: ComfyUI-aerith-06.png for folder: rand_woman
-Processing reference image: ComfyUI-belle-22.png for folder: rand_woman
-Finished processing reference image: ComfyUI-belle-22.png for folder: rand_woman
-Processing reference image: ComfyUI-gwen-29.png for folder: rand_woman
-Finished processing reference image: ComfyUI-gwen-29.png for folder: rand_woman
-Processing reference image: ComfyUI-nami-39.png for folder: rand_woman
-Finished processing reference image: ComfyUI-nami-39.png for folder: rand_woman
-Processing reference image: ComfyUI-zelda-59.png for folder: rand_woman
-Finished processing reference image: ComfyUI-zelda-59.png for folder: rand_woman
-Finished processing all reference images for folder: rand_woman. Generated 5 output TXT files.
-Script completed successfully.
+Starting new run...
+2024-12-22 13:27:55,203 - INFO - Logging initialized at INFO level.
+2024-12-22 13:27:55,204 - INFO - Starting script with 10 processes.
+2024-12-22 13:27:55,204 - INFO - Starting image processing...
+2024-12-22 13:27:55,204 - INFO - ==================================================
+2024-12-22 13:27:55,204 - INFO - Starting reference embedding computation...
+2024-12-22 13:27:56,182 - INFO - Detected 1 faces in C:\Users\klrom\Desktop\MGAS\DIR\references\ComfyUI-sampler_name-cfg-10-2024-12-15 20-36-29-03.png.
+2024-12-22 13:27:56,186 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:56,196 - INFO - Detected 1 faces.
+2024-12-22 13:27:56,198 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:56,383 - INFO - Successfully computed embedding.
+2024-12-22 13:27:56,710 - INFO - Detected 1 faces in C:\Users\klrom\Desktop\MGAS\DIR\references\ComfyUI-sampler_name-cfg-10-2024-12-15 20-50-28-04.png.
+2024-12-22 13:27:56,713 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:56,723 - INFO - Detected 1 faces.
+2024-12-22 13:27:56,724 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:56,908 - INFO - Successfully computed embedding.
+2024-12-22 13:27:57,245 - INFO - Detected 1 faces in C:\Users\klrom\Desktop\MGAS\DIR\references\ComfyUI-sampler_name-cfg-10-2024-12-15 21-12-42-03.png.
+2024-12-22 13:27:57,248 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:57,259 - INFO - Detected 1 faces.
+2024-12-22 13:27:57,261 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:57,444 - INFO - Successfully computed embedding.
+2024-12-22 13:27:57,773 - INFO - Detected 1 faces in C:\Users\klrom\Desktop\MGAS\DIR\references\ComfyUI-sampler_name-cfg-10-2024-12-15 22-00-25-02.png.
+2024-12-22 13:27:57,775 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:57,786 - INFO - Detected 1 faces.
+2024-12-22 13:27:57,788 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:57,976 - INFO - Successfully computed embedding.
+2024-12-22 13:27:58,281 - INFO - Detected 1 faces in C:\Users\klrom\Desktop\MGAS\DIR\references\ComfyUI-sampler_name-cfg-10-2024-12-15 22-25-54-04.png.
+2024-12-22 13:27:58,285 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:58,294 - INFO - Detected 1 faces.
+2024-12-22 13:27:58,296 - INFO - Face alignment and preprocessing successful.
+2024-12-22 13:27:58,480 - INFO - Successfully computed embedding.
+2024-12-22 13:27:58,481 - INFO - ==================================================
+2024-12-22 13:27:58,481 - INFO - Reference embeddings saved to C:\Users\klrom\Desktop\MGAS\CACHE\ref_embeddings.pkl
+2024-12-22 13:27:58,481 - INFO - ==================================================
+2024-12-22 13:27:58,481 - INFO - Reference embedding summary: 5 successful, 0 failed.
+2024-12-22 13:27:58,481 - INFO - ==================================================
+2024-12-22 13:27:58,492 - INFO - ==================================================
+2024-12-22 13:27:58,492 - INFO - Total tasks prepared: 2250
+2024-12-22 13:27:58,492 - INFO - ==================================================
+2024-12-22 13:27:58,492 - INFO - Starting image processing tasks...
+2024-12-22 13:28:38,831 - INFO - Processing batch 1/45. Batch size: 50
+2024-12-22 13:28:38,831 - INFO - Processed 10/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,831 - INFO - Processed 20/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,831 - INFO - Processed 30/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,831 - INFO - Processed 40/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,831 - INFO - Processed 50/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,831 - INFO - Batch 1/45 completed. Total processed: 50/2250.
+2024-12-22 13:28:38,866 - INFO - Processing batch 2/45. Batch size: 50
+2024-12-22 13:28:38,866 - INFO - Processed 60/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,866 - INFO - Processed 70/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,866 - INFO - Processed 80/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,866 - INFO - Processed 90/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,867 - INFO - Processed 100/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,867 - INFO - Batch 2/45 completed. Total processed: 100/2250.
+2024-12-22 13:28:38,913 - INFO - Processing batch 3/45. Batch size: 50
+2024-12-22 13:28:38,914 - INFO - Processed 110/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,914 - INFO - Processed 120/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,914 - INFO - Processed 130/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,914 - INFO - Processed 140/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,914 - INFO - Processed 150/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:38,914 - INFO - Batch 3/45 completed. Total processed: 150/2250.
+2024-12-22 13:28:39,036 - INFO - Processing batch 4/45. Batch size: 50
+2024-12-22 13:28:39,036 - INFO - Processed 160/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,036 - INFO - Processed 170/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,036 - INFO - Processed 180/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,036 - INFO - Processed 190/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,036 - INFO - Processed 200/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,036 - INFO - Batch 4/45 completed. Total processed: 200/2250.
+2024-12-22 13:28:39,155 - INFO - Processing batch 5/45. Batch size: 50
+2024-12-22 13:28:39,156 - INFO - Processed 210/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,156 - INFO - Processed 220/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,156 - INFO - Processed 230/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,156 - INFO - Processed 240/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,156 - INFO - Processed 250/2250 files. Elapsed time: 43 seconds.
+2024-12-22 13:28:39,156 - INFO - Batch 5/45 completed. Total processed: 250/2250.
+2024-12-22 13:28:39,732 - INFO - Processing batch 6/45. Batch size: 50
+2024-12-22 13:28:39,732 - INFO - Processed 260/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,732 - INFO - Processed 270/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,732 - INFO - Processed 280/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,732 - INFO - Processed 290/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,732 - INFO - Processed 300/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,732 - INFO - Batch 6/45 completed. Total processed: 300/2250.
+2024-12-22 13:28:39,814 - INFO - Processing batch 7/45. Batch size: 50
+2024-12-22 13:28:39,814 - INFO - Processed 310/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,814 - INFO - Processed 320/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,815 - INFO - Processed 330/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,815 - INFO - Processed 340/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,815 - INFO - Processed 350/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,815 - INFO - Batch 7/45 completed. Total processed: 350/2250.
+2024-12-22 13:28:39,871 - INFO - Processing batch 8/45. Batch size: 50
+2024-12-22 13:28:39,871 - INFO - Processed 360/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,871 - INFO - Processed 370/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,871 - INFO - Processed 380/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,871 - INFO - Processed 390/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,871 - INFO - Processed 400/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,871 - INFO - Batch 8/45 completed. Total processed: 400/2250.
+2024-12-22 13:28:39,902 - INFO - Processing batch 9/45. Batch size: 50
+2024-12-22 13:28:39,902 - INFO - Processed 410/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,902 - INFO - Processed 420/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,902 - INFO - Processed 430/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,902 - INFO - Processed 440/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,902 - INFO - Processed 450/2250 files. Elapsed time: 44 seconds.
+2024-12-22 13:28:39,902 - INFO - Batch 9/45 completed. Total processed: 450/2250.
+2024-12-22 13:28:40,447 - INFO - Processing batch 10/45. Batch size: 50
+2024-12-22 13:28:40,447 - INFO - Processed 460/2250 files. Elapsed time: 45 seconds.
+2024-12-22 13:28:40,447 - INFO - Processed 470/2250 files. Elapsed time: 45 seconds.
+2024-12-22 13:28:40,447 - INFO - Processed 480/2250 files. Elapsed time: 45 seconds.
+2024-12-22 13:28:40,447 - INFO - Processed 490/2250 files. Elapsed time: 45 seconds.
+2024-12-22 13:28:40,447 - INFO - Processed 500/2250 files. Elapsed time: 45 seconds.
+2024-12-22 13:28:40,447 - INFO - Batch 10/45 completed. Total processed: 500/2250.
+2024-12-22 13:29:18,343 - INFO - Processing batch 11/45. Batch size: 50
+2024-12-22 13:29:18,343 - INFO - Processed 510/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,344 - INFO - Processed 520/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,344 - INFO - Processed 530/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,344 - INFO - Processed 540/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,344 - INFO - Processed 550/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,344 - INFO - Batch 11/45 completed. Total processed: 550/2250.
+2024-12-22 13:29:18,998 - INFO - Processing batch 12/45. Batch size: 50
+2024-12-22 13:29:18,999 - INFO - Processed 560/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,999 - INFO - Processed 570/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,999 - INFO - Processed 580/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,999 - INFO - Processed 590/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,999 - INFO - Processed 600/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:18,999 - INFO - Batch 12/45 completed. Total processed: 600/2250.
+2024-12-22 13:29:19,089 - INFO - Processing batch 13/45. Batch size: 50
+2024-12-22 13:29:19,089 - INFO - Processed 610/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:19,089 - INFO - Processed 620/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:19,090 - INFO - Processed 630/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:19,090 - INFO - Processed 640/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:19,090 - INFO - Processed 650/2250 files. Elapsed time: 83 seconds.
+2024-12-22 13:29:19,090 - INFO - Batch 13/45 completed. Total processed: 650/2250.
+2024-12-22 13:29:19,218 - INFO - Processing batch 14/45. Batch size: 50
+2024-12-22 13:29:19,218 - INFO - Processed 660/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,218 - INFO - Processed 670/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,218 - INFO - Processed 680/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,218 - INFO - Processed 690/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,218 - INFO - Processed 700/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,218 - INFO - Batch 14/45 completed. Total processed: 700/2250.
+2024-12-22 13:29:19,305 - INFO - Processing batch 15/45. Batch size: 50
+2024-12-22 13:29:19,305 - INFO - Processed 710/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,305 - INFO - Processed 720/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,306 - INFO - Processed 730/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,306 - INFO - Processed 740/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,306 - INFO - Processed 750/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,306 - INFO - Batch 15/45 completed. Total processed: 750/2250.
+2024-12-22 13:29:19,536 - INFO - Processing batch 16/45. Batch size: 50
+2024-12-22 13:29:19,536 - INFO - Processed 760/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,536 - INFO - Processed 770/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,536 - INFO - Processed 780/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,536 - INFO - Processed 790/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,536 - INFO - Processed 800/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,536 - INFO - Batch 16/45 completed. Total processed: 800/2250.
+2024-12-22 13:29:19,763 - INFO - Processing batch 17/45. Batch size: 50
+2024-12-22 13:29:19,763 - INFO - Processed 810/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,763 - INFO - Processed 820/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,763 - INFO - Processed 830/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,763 - INFO - Processed 840/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,763 - INFO - Processed 850/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:19,763 - INFO - Batch 17/45 completed. Total processed: 850/2250.
+2024-12-22 13:29:20,056 - INFO - Processing batch 18/45. Batch size: 50
+2024-12-22 13:29:20,057 - INFO - Processed 860/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,057 - INFO - Processed 870/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,057 - INFO - Processed 880/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,057 - INFO - Processed 890/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,057 - INFO - Processed 900/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,057 - INFO - Batch 18/45 completed. Total processed: 900/2250.
+2024-12-22 13:29:20,133 - INFO - Processing batch 19/45. Batch size: 50
+2024-12-22 13:29:20,134 - INFO - Processed 910/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,134 - INFO - Processed 920/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,134 - INFO - Processed 930/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,134 - INFO - Processed 940/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,134 - INFO - Processed 950/2250 files. Elapsed time: 84 seconds.
+2024-12-22 13:29:20,134 - INFO - Batch 19/45 completed. Total processed: 950/2250.
+2024-12-22 13:29:21,055 - INFO - Processing batch 20/45. Batch size: 50
+2024-12-22 13:29:21,055 - INFO - Processed 960/2250 files. Elapsed time: 85 seconds.
+2024-12-22 13:29:21,055 - INFO - Processed 970/2250 files. Elapsed time: 85 seconds.
+2024-12-22 13:29:21,055 - INFO - Processed 980/2250 files. Elapsed time: 85 seconds.
+2024-12-22 13:29:21,055 - INFO - Processed 990/2250 files. Elapsed time: 85 seconds.
+2024-12-22 13:29:21,055 - INFO - Processed 1000/2250 files. Elapsed time: 85 seconds.
+2024-12-22 13:29:21,055 - INFO - Batch 20/45 completed. Total processed: 1000/2250.
+2024-12-22 13:29:57,096 - INFO - Processing batch 21/45. Batch size: 50
+2024-12-22 13:29:57,097 - INFO - Processed 1010/2250 files. Elapsed time: 121 seconds.
+2024-12-22 13:29:57,097 - INFO - Processed 1020/2250 files. Elapsed time: 121 seconds.
+2024-12-22 13:29:57,097 - INFO - Processed 1030/2250 files. Elapsed time: 121 seconds.
+2024-12-22 13:29:57,097 - INFO - Processed 1040/2250 files. Elapsed time: 121 seconds.
+2024-12-22 13:29:57,097 - INFO - Processed 1050/2250 files. Elapsed time: 121 seconds.
+2024-12-22 13:29:57,097 - INFO - Batch 21/45 completed. Total processed: 1050/2250.
+2024-12-22 13:29:57,309 - INFO - Processing batch 22/45. Batch size: 50
+2024-12-22 13:29:57,309 - INFO - Processed 1060/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:57,309 - INFO - Processed 1070/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:57,309 - INFO - Processed 1080/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:57,309 - INFO - Processed 1090/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:57,309 - INFO - Processed 1100/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:57,309 - INFO - Batch 22/45 completed. Total processed: 1100/2250.
+2024-12-22 13:29:58,063 - INFO - Processing batch 23/45. Batch size: 50
+2024-12-22 13:29:58,063 - INFO - Processed 1110/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:58,063 - INFO - Processed 1120/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:58,063 - INFO - Processed 1130/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:58,063 - INFO - Processed 1140/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:58,064 - INFO - Processed 1150/2250 files. Elapsed time: 122 seconds.
+2024-12-22 13:29:58,064 - INFO - Batch 23/45 completed. Total processed: 1150/2250.
+2024-12-22 13:29:58,392 - INFO - Processing batch 24/45. Batch size: 50
+2024-12-22 13:29:58,392 - INFO - Processed 1160/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,392 - INFO - Processed 1170/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,392 - INFO - Processed 1180/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,392 - INFO - Processed 1190/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,392 - INFO - Processed 1200/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,392 - INFO - Batch 24/45 completed. Total processed: 1200/2250.
+2024-12-22 13:29:58,500 - INFO - Processing batch 25/45. Batch size: 50
+2024-12-22 13:29:58,500 - INFO - Processed 1210/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,500 - INFO - Processed 1220/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,501 - INFO - Processed 1230/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,501 - INFO - Processed 1240/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,501 - INFO - Processed 1250/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,501 - INFO - Batch 25/45 completed. Total processed: 1250/2250.
+2024-12-22 13:29:58,858 - INFO - Processing batch 26/45. Batch size: 50
+2024-12-22 13:29:58,859 - INFO - Processed 1260/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,859 - INFO - Processed 1270/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,859 - INFO - Processed 1280/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,859 - INFO - Processed 1290/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,859 - INFO - Processed 1300/2250 files. Elapsed time: 123 seconds.
+2024-12-22 13:29:58,859 - INFO - Batch 26/45 completed. Total processed: 1300/2250.
+2024-12-22 13:29:59,428 - INFO - Processing batch 27/45. Batch size: 50
+2024-12-22 13:29:59,429 - INFO - Processed 1310/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,429 - INFO - Processed 1320/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,429 - INFO - Processed 1330/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,429 - INFO - Processed 1340/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,429 - INFO - Processed 1350/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,429 - INFO - Batch 27/45 completed. Total processed: 1350/2250.
+2024-12-22 13:29:59,496 - INFO - Processing batch 28/45. Batch size: 50
+2024-12-22 13:29:59,496 - INFO - Processed 1360/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,496 - INFO - Processed 1370/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,497 - INFO - Processed 1380/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,497 - INFO - Processed 1390/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,497 - INFO - Processed 1400/2250 files. Elapsed time: 124 seconds.
+2024-12-22 13:29:59,497 - INFO - Batch 28/45 completed. Total processed: 1400/2250.
+2024-12-22 13:30:00,253 - INFO - Processing batch 29/45. Batch size: 50
+2024-12-22 13:30:00,254 - INFO - Processed 1410/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,254 - INFO - Processed 1420/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,254 - INFO - Processed 1430/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,254 - INFO - Processed 1440/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,254 - INFO - Processed 1450/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,254 - INFO - Batch 29/45 completed. Total processed: 1450/2250.
+2024-12-22 13:30:00,830 - INFO - Processing batch 30/45. Batch size: 50
+2024-12-22 13:30:00,830 - INFO - Processed 1460/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,830 - INFO - Processed 1470/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,830 - INFO - Processed 1480/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,830 - INFO - Processed 1490/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,830 - INFO - Processed 1500/2250 files. Elapsed time: 125 seconds.
+2024-12-22 13:30:00,830 - INFO - Batch 30/45 completed. Total processed: 1500/2250.
+2024-12-22 13:30:36,529 - INFO - Processing batch 31/45. Batch size: 50
+2024-12-22 13:30:36,529 - INFO - Processed 1510/2250 files. Elapsed time: 161 seconds.
+2024-12-22 13:30:36,529 - INFO - Processed 1520/2250 files. Elapsed time: 161 seconds.
+2024-12-22 13:30:36,530 - INFO - Processed 1530/2250 files. Elapsed time: 161 seconds.
+2024-12-22 13:30:36,530 - INFO - Processed 1540/2250 files. Elapsed time: 161 seconds.
+2024-12-22 13:30:36,530 - INFO - Processed 1550/2250 files. Elapsed time: 161 seconds.
+2024-12-22 13:30:36,530 - INFO - Batch 31/45 completed. Total processed: 1550/2250.
+2024-12-22 13:30:37,338 - INFO - Processing batch 32/45. Batch size: 50
+2024-12-22 13:30:37,338 - INFO - Processed 1560/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,338 - INFO - Processed 1570/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,338 - INFO - Processed 1580/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,338 - INFO - Processed 1590/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,338 - INFO - Processed 1600/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,338 - INFO - Batch 32/45 completed. Total processed: 1600/2250.
+2024-12-22 13:30:37,811 - INFO - Processing batch 33/45. Batch size: 50
+2024-12-22 13:30:37,812 - INFO - Processed 1610/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,812 - INFO - Processed 1620/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,812 - INFO - Processed 1630/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,813 - INFO - Processed 1640/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,813 - INFO - Processed 1650/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,813 - INFO - Batch 33/45 completed. Total processed: 1650/2250.
+2024-12-22 13:30:37,835 - INFO - Processing batch 34/45. Batch size: 50
+2024-12-22 13:30:37,835 - INFO - Processed 1660/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,835 - INFO - Processed 1670/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,835 - INFO - Processed 1680/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,835 - INFO - Processed 1690/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,835 - INFO - Processed 1700/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:37,835 - INFO - Batch 34/45 completed. Total processed: 1700/2250.
+2024-12-22 13:30:38,098 - INFO - Processing batch 35/45. Batch size: 50
+2024-12-22 13:30:38,098 - INFO - Processed 1710/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:38,098 - INFO - Processed 1720/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:38,099 - INFO - Processed 1730/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:38,099 - INFO - Processed 1740/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:38,099 - INFO - Processed 1750/2250 files. Elapsed time: 162 seconds.
+2024-12-22 13:30:38,099 - INFO - Batch 35/45 completed. Total processed: 1750/2250.
+2024-12-22 13:30:38,495 - INFO - Processing batch 36/45. Batch size: 50
+2024-12-22 13:30:38,495 - INFO - Processed 1760/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,495 - INFO - Processed 1770/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,495 - INFO - Processed 1780/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,495 - INFO - Processed 1790/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,496 - INFO - Processed 1800/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,496 - INFO - Batch 36/45 completed. Total processed: 1800/2250.
+2024-12-22 13:30:38,703 - INFO - Processing batch 37/45. Batch size: 50
+2024-12-22 13:30:38,703 - INFO - Processed 1810/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,703 - INFO - Processed 1820/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,703 - INFO - Processed 1830/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,703 - INFO - Processed 1840/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,703 - INFO - Processed 1850/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,703 - INFO - Batch 37/45 completed. Total processed: 1850/2250.
+2024-12-22 13:30:38,936 - INFO - Processing batch 38/45. Batch size: 50
+2024-12-22 13:30:38,936 - INFO - Processed 1860/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,936 - INFO - Processed 1870/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,936 - INFO - Processed 1880/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,936 - INFO - Processed 1890/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,936 - INFO - Processed 1900/2250 files. Elapsed time: 163 seconds.
+2024-12-22 13:30:38,936 - INFO - Batch 38/45 completed. Total processed: 1900/2250.
+2024-12-22 13:30:39,788 - INFO - Processing batch 39/45. Batch size: 50
+2024-12-22 13:30:39,789 - INFO - Processed 1910/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:39,789 - INFO - Processed 1920/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:39,789 - INFO - Processed 1930/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:39,789 - INFO - Processed 1940/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:39,789 - INFO - Processed 1950/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:39,789 - INFO - Batch 39/45 completed. Total processed: 1950/2250.
+2024-12-22 13:30:40,098 - INFO - Processing batch 40/45. Batch size: 50
+2024-12-22 13:30:40,098 - INFO - Processed 1960/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:40,098 - INFO - Processed 1970/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:40,098 - INFO - Processed 1980/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:40,098 - INFO - Processed 1990/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:40,098 - INFO - Processed 2000/2250 files. Elapsed time: 164 seconds.
+2024-12-22 13:30:40,098 - INFO - Batch 40/45 completed. Total processed: 2000/2250.
+2024-12-22 13:31:07,447 - INFO - Processing batch 41/45. Batch size: 50
+2024-12-22 13:31:07,447 - INFO - Processed 2010/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,447 - INFO - Processed 2020/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,447 - INFO - Processed 2030/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,448 - INFO - Processed 2040/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,448 - INFO - Processed 2050/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,448 - INFO - Batch 41/45 completed. Total processed: 2050/2250.
+2024-12-22 13:31:07,664 - INFO - Processing batch 42/45. Batch size: 50
+2024-12-22 13:31:07,664 - INFO - Processed 2060/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,664 - INFO - Processed 2070/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,664 - INFO - Processed 2080/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,664 - INFO - Processed 2090/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,664 - INFO - Processed 2100/2250 files. Elapsed time: 192 seconds.
+2024-12-22 13:31:07,664 - INFO - Batch 42/45 completed. Total processed: 2100/2250.
+2024-12-22 13:31:08,580 - INFO - Processing batch 43/45. Batch size: 50
+2024-12-22 13:31:08,580 - INFO - Processed 2110/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,580 - INFO - Processed 2120/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,580 - INFO - Processed 2130/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,581 - INFO - Processed 2140/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,581 - INFO - Processed 2150/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,581 - INFO - Batch 43/45 completed. Total processed: 2150/2250.
+2024-12-22 13:31:08,696 - INFO - Processing batch 44/45. Batch size: 50
+2024-12-22 13:31:08,697 - INFO - Processed 2160/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,697 - INFO - Processed 2170/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,697 - INFO - Processed 2180/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,697 - INFO - Processed 2190/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,697 - INFO - Processed 2200/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,697 - INFO - Batch 44/45 completed. Total processed: 2200/2250.
+2024-12-22 13:31:08,881 - INFO - Processing batch 45/45. Batch size: 50
+2024-12-22 13:31:08,882 - INFO - Processed 2210/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,882 - INFO - Processed 2220/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,882 - INFO - Processed 2230/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,882 - INFO - Processed 2240/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,882 - INFO - Processed 2250/2250 files. Elapsed time: 193 seconds.
+2024-12-22 13:31:08,882 - INFO - Batch 45/45 completed. Total processed: 2250/2250.
+2024-12-22 13:31:08,910 - INFO - Processed 2250/2250 files. Total time: 193 seconds.
+2024-12-22 13:31:08,911 - INFO - ==================================================
+2024-12-22 13:31:08,911 - INFO - Total processed folders: 15
+2024-12-22 13:31:08,911 - INFO - Completed 2250 files in 193 seconds.
+2024-12-22 13:31:08,911 - INFO - ==================================================
+2024-12-22 13:31:08,911 - INFO - Image processing completed.
+2024-12-22 13:31:08,911 - INFO - Script execution completed successfully.

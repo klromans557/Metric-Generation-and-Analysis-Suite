@@ -76,20 +76,97 @@ pvalue_threshold = 0.05 # For testing the NULL-hypothesis
 
 # ===== LOGGING ============================================
 # Logger configuration
-# Function to setup logger
-def setup_logger(name, log_file):
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
-    handler = logging.FileHandler(log_file, mode='w')
-    handler.setFormatter(logging.Formatter('%(message)s'))
-    logger.addHandler(handler)
-    return logger
+# Setup logging function with verbosity levels and real-time flush
+LOG_LEVEL = "INFO"  # Change to DEBUG, INFO, WARNING, ERROR, or CRITICAL as needed
 
-# DEBUG MSG ================================================
-#print("Logging configured.")
+def setup_logging():
+    """
+    Sets up two separate loggers: metrics_logger and output_logger.
+    Clears any existing global logger handlers to prevent interference.
+    """
+    log_dir = os.path.join(os.getcwd(), 'LOGS')
+    os.makedirs(log_dir, exist_ok=True)
+
+    # Safeguard: Clear existing handlers on the root logger
+    logging.getLogger().handlers.clear()
+
+    # Create loggers
+    loggers = {}
+
+    # Metric log file logger
+    metrics_logger = logging.getLogger('metrics_logger')
+    metrics_logger.setLevel(getattr(logging, LOG_LEVEL.upper(), logging.INFO))
+    metric_file_handler = logging.FileHandler(os.path.join(log_dir, 'metric_weight_normal_stats.txt'))
+    metric_file_handler.setFormatter(logging.Formatter('%(message)s'))
+    metrics_logger.addHandler(metric_file_handler)
+    loggers['metric_weight_normal_stats.txt'] = metrics_logger
+
+    # Output stats log file logger
+    output_logger = logging.getLogger('output_logger')
+    output_logger.setLevel(getattr(logging, LOG_LEVEL.upper(), logging.INFO))
+    output_file_handler = logging.FileHandler(os.path.join(log_dir, 'output_stats.txt'))
+    output_file_handler.setFormatter(logging.Formatter('%(message)s'))
+    output_logger.addHandler(output_file_handler)
+    loggers['output_stats.txt'] = output_logger
+
+    return loggers
+
+def log(message, level="INFO", file_target=None):
+    """
+    Routes log messages to the appropriate logger based on the file_target.
+    Logs to the console and the specified logger.
+    """
+    if not file_target:
+        raise ValueError("file_target must be specified.")
+
+    # Extract the logger based on the file_target
+    logger_name = os.path.basename(file_target)
+    logger = loggers.get(logger_name)
+
+    if not logger:
+        raise ValueError(f"No logger configured for file target: {file_target}")
+
+    # Log the message with the specified level
+    getattr(logger, level.lower(), logger.info)(message)
+
+    # Automatically update GUI if logging to output_stats.txt
+    if file_target.endswith("output_stats.txt") and hasattr(gui, 'display'):
+        gui.display(message)
+
+def log_debug(message, file_target="LOGS/metric_weight_normal_stats.txt"):
+    """
+    Logs debug messages if the LOG_LEVEL is set to DEBUG.
+    Routes to the correct logger based on the file_target.
+    """
+    if LOG_LEVEL == "DEBUG":
+        log(message, level="DEBUG", file_target=file_target)
+
 # ===== LOGGING ============================================
 
 # ===== FUNCTION ZOO =======================================
+def check_output_integrity(output_dir):
+    try:
+        valid = True
+        for subdir, _, files in os.walk(output_dir):
+            for file in files:
+                if file.endswith(".txt"):
+                    filepath = os.path.join(subdir, file)
+                    try:
+                        with open(filepath, 'r') as f:
+                            data = eval(f.read())
+                            if not isinstance(data, list) or not all(isinstance(x, (float, int)) for x in data):
+                                log(f"Corrupted file detected: {filepath}", level="ERROR", file_target=metric_log_file)
+                                valid = False
+                    except Exception as e:
+                        log(f"Error reading file {filepath}: {e}", level="ERROR", file_target=metric_log_file)
+                        log_debug(traceback.format_exc())
+                        valid = False
+        return valid
+    except Exception as e:
+        log(f"Unexpected error during output integrity check: {e}", level="CRITICAL", file_target=metric_log_file)
+        log_debug(traceback.format_exc())
+        return False
+
 def alphanumeric_sort_key(s):
     return [(int(text) if text.isdigit() else text.lower()) for text in re.split('([0-9]+)', s)]
 
@@ -100,11 +177,18 @@ def read_data_from_directory(directory):
             if filename.endswith(".txt"):
                 filepath = os.path.join(directory, filename)
                 with open(filepath, 'r') as file:
-                    data = file.read().strip('[]').split(',')
-                    cleaned_data = [float(value.strip()) for value in data if 0 <= float(value.strip()) <= 1]
-                    all_data.extend(cleaned_data)
+                    try:
+                        data = eval(file.read())
+                        if not isinstance(data, list):
+                            raise ValueError(f"Invalid format in {filename}. Expected a list.")
+                        cleaned_data = [float(value) for value in data if 0 <= float(value) <= 1]
+                        all_data.extend(cleaned_data)
+                    except Exception as e:
+                        log(f"Skipping corrupted file {filepath}: {e}", level="WARNING", file_target=metric_log_file)
+                        log_debug(traceback.format_exc())
     except Exception as e:
-        main_logger.error(f"An error occurred while reading {filepath}: {e}")
+        log(f"Error reading directory {directory}: {e}", level="ERROR", file_target=metric_log_file)
+        log_debug(traceback.format_exc())
     return np.array(all_data)
 
 def get_metric_values(metrics, order):
@@ -159,6 +243,10 @@ def round_and_format(value, decimals=4, threshold=1e-4):
         return f"{value:.{decimals}e}"  # Scientific notation with 'decimals' significant figures
     else:
         return f"{value:.{decimals}f}"  # Fixed-point notation with 'decimals' decimal places
+
+def format_weight_list(weight_list, decimals=4, threshold=1e-4):
+    # Format a list of weights by rounding using `round_and_format`.
+    return [round_and_format(weight, decimals, threshold) for weight in weight_list]
 
 def compute_bin_size(numbers):
     bins = int(np.ceil(np.log2(len(numbers)) + 1))
@@ -462,12 +550,24 @@ def perform_comparison(dir_model_1, dir_model_2):
 
 # Only top winners of Round-Robin are reported
 def report_top_winners(win_counts, top_n=3, logger=None, model_dirs=[]):
+    """
+    Reports the top winners in a round-robin comparison.
+
+    Parameters:
+    win_counts (dict): A dictionary of model indices and their respective win counts.
+    top_n (int): Number of top winners to report.
+    logger (function): The logging function (e.g., log).
+    model_dirs (list): List of model directories.
+
+    Returns:
+    int: The index of the top winner.
+    """
     sorted_win_counts = sorted(win_counts.items(), key=lambda item: item[1], reverse=True)
     if logger:
-        logger.info("Top Winners:")
+        logger("Top Winners:", file_target="LOGS/output_stats.txt")
         for i, (model_index, count) in enumerate(sorted_win_counts[:top_n]):
             folder_name = os.path.basename(model_dirs[model_index])
-            logger.info(f"{folder_name}: Wins = {count}")
+            logger(f"Top {i + 1}: {folder_name} with {count} wins", file_target="LOGS/output_stats.txt")
     return sorted_win_counts[0][0]  # Return the index of the top winner
 
 # Defines the Round-Robin tournament style
@@ -501,14 +601,26 @@ def main():
     # Automatically sets directories and files
     script_dir = os.path.dirname(os.path.abspath(__file__))
     base_dir = os.path.join(script_dir, 'DIR', 'output')  # Directory containing model folders
+
+    # Logging files and folder
     logs_dir = os.path.join(script_dir, 'LOGS')
     metric_log_file = os.path.join(logs_dir, 'metric_weight_normal_stats.txt')
     output_stats_file = os.path.join(logs_dir, 'output_stats.txt')
-    
-    # Ensure the LOGS directory exists
-    if not os.path.exists(logs_dir):
-        os.makedirs(logs_dir)
-    
+
+    # Clear the log files for a new run
+    with open(metric_log_file, "w") as file:
+        file.write("")  # Clear contents of metric log file
+    with open(output_stats_file, "w") as file:
+        file.write("")  # Clear contents of output stats file
+
+    # Set up loggers
+    global loggers
+    loggers = setup_logging()
+
+    # Example usage with the log() function
+    log("Logging initialized at INFO level.", level="INFO", file_target=metric_log_file)
+    log("Logging initialized for output statistics.", level="INFO", file_target=metric_log_file)
+
     # Well, is it?
     def is_directory_empty(directory):
         return not any(os.scandir(directory))
@@ -523,29 +635,34 @@ def main():
         # Create an empty file
         with open(output_stats_file, 'w') as file:
             pass  # Just creating an empty file
-    
-    # Setup loggers
-    log_stream = StringIO()
-    metrics_logger = setup_logger('metrics_logger', metric_log_file)
-    main_logger = setup_logger('main_logger', output_stats_file)
-    
-    # Add console handler to main_logger for terminal output
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(logging.Formatter('%(message)s'))
-    main_logger.addHandler(console_handler)
+
+    # Ensure the LOGS directory exists
+    if not os.path.exists(logs_dir):
+        os.makedirs(logs_dir)
+    log_debug(f"Logs directory ensured at: {logs_dir}", file_target=metric_log_file)
+    log_debug(f"Metric log file created: {metric_log_file}", file_target=metric_log_file)
+    log_debug(f"Output stats file created: {output_stats_file}", file_target=output_stats_file)
     
     models_to_compare_directly = os.getenv('MODELS_TO_COMPARE', "1,2").split(',')
     try:
         models_to_compare_directly = [int(model.strip()) for model in models_to_compare_directly]
     except ValueError:
         error_message = "models_to_compare_directly must contain comma-separated integer values."
-        main_logger.error(error_message)
+        log(error_message, level="CRITICAL", file_target=output_stats_file)
         sys.exit(error_message)
         
     if is_directory_empty(base_dir):
-        print("Error: The 'output' folder is empty.")
+        log("Error: The 'output' folder is empty.", level="CRITICAL", file_target=output_stats_file)
         return
-    
+
+    log_debug(f"Starting integrity check for base directory: {base_dir}")
+
+    if not check_output_integrity(base_dir):
+        log("Output integrity check failed. Please fix corrupted files and try again.", level="CRITICAL", file_target=metric_log_file)
+        sys.exit(1)
+
+    log_debug("Output directory passed integrity check.")
+
     model_dirs = [os.path.join(base_dir, subdir) for subdir in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, subdir))]
     model_dirs.sort()  # Sort the model directories by name
 
@@ -566,33 +683,41 @@ def main():
 
     # Sort the model directories by the prepended number (now as integers)
     model_dirs.sort(key=lambda x: int(os.path.basename(x).split('_', 1)[0]))
-    
+
     if len(model_dirs) < 2:
-        print("Error: There must be at least two model directories to compare.")
+        log("Error: There must be at least two model directories to compare.", level="ERROR", file_target=output_stats_file)
         return
 
     if len(models_to_compare_directly) != 2:
         error_message = "models_to_compare_directly must contain exactly two numbers."
-        main_logger.error(error_message)
+        log(error_message, level="CRITICAL", file_target=output_stats_file)
         sys.exit(error_message)
 
     model_idx_1, model_idx_2 = models_to_compare_directly
     if model_idx_1 <= 0 or model_idx_2 <= 0:
         error_message = "Model indices must be positive integers."
-        main_logger.error(error_message)
+        log(error_message, level="CRITICAL", file_target=output_stats_file)
         sys.exit(error_message)
+
     if model_idx_1 > len(model_dirs) or model_idx_2 > len(model_dirs):
         error_message = f"Model indices must be less than or equal to the number of model directories ({len(model_dirs)})."
-        main_logger.error(error_message)
+        log(error_message, level="CRITICAL", file_target=output_stats_file)
         sys.exit(error_message)
 
     # For Python indexing; first position is '0'
     model_idx_1 -= 1
     model_idx_2 -= 1
 
-    values_1 = read_data_from_directory(model_dirs[model_idx_1])
-    values_2 = read_data_from_directory(model_dirs[model_idx_2])
-    
+    try:
+        values_1 = read_data_from_directory(model_dirs[model_idx_1])
+        values_2 = read_data_from_directory(model_dirs[model_idx_2])
+    except Exception as e:
+        log(f"Error reading data from directory: {e}", level="ERROR", file_target=metric_log_file)
+        log_debug(traceback.format_exc())
+
+    log_debug(f"Loaded {len(values_1)} data points from {model_dirs[model_idx_1]}.")
+    log_debug(f"Loaded {len(values_2)} data points from {model_dirs[model_idx_2]}.")
+
     folder_name_1 = os.path.basename(model_dirs[model_idx_1])
     folder_name_2 = os.path.basename(model_dirs[model_idx_2])
 
@@ -600,8 +725,15 @@ def main():
         print(f"Error: One or both specified model directories have no valid data.")
         return
 
+    if not check_output_integrity(base_dir):
+        print("Output integrity check failed. Please fix corrupted files and try again.")
+        sys.exit(1)
+
     metrics_1 = calculate_metrics(values_1)
     metrics_2 = calculate_metrics(values_2)
+
+    log_debug(f"Metrics for {folder_name_1}: {metrics_1}")
+    log_debug(f"Metrics for {folder_name_2}: {metrics_2}")
 
     # Sythnetic normals to compare with each distributions; assuming mean = Mean & sd = IQR from data
     synthetic_metrics_1 = generate_synthetic_normal_metrics(metrics_1[0], metrics_1[4], len(values_1))
@@ -625,60 +757,75 @@ def main():
     normal_status_2 = interpret_test_results(normality_test_2, test_name_2)
 
     # METRICS =========================
-    metrics_logger.info("="*50)
-    metrics_logger.info("Metric Values")
-    metrics_logger.info("="*50)
+    # Start "Metric Values" section
+    symbol_multiple = 25
+    
+    log("\n" + "=" * symbol_multiple, file_target=metric_log_file)
+    log("Metric Values", file_target=metric_log_file)
+    log("=" * symbol_multiple, file_target=metric_log_file)
 
+    # Format and log metric values
     metric_dict_1 = {name: round_and_format(value) for name, value in zip(order_of_import_of_metrics, get_metric_values(metrics_1, order_of_import_of_metrics))}
     metric_dict_2 = {name: round_and_format(value) for name, value in zip(order_of_import_of_metrics, get_metric_values(metrics_2, order_of_import_of_metrics))}
-
-    metrics_logger.info(f"Metrics for {folder_name_1}: %s", metric_dict_1)
-    metrics_logger.info(f"Metrics for {folder_name_2}: %s", metric_dict_2)
-   
-    metrics_logger.info("\n" + "="*50)
-    metrics_logger.info("Weight Values")
-    metrics_logger.info("="*50)
     
+    # Log metrics for each model
+    log(f"Metrics for {folder_name_1}: {metric_dict_1}", level="INFO", file_target=metric_log_file)
+    log(f"Metrics for {folder_name_2}: {metric_dict_2}", level="INFO", file_target=metric_log_file)
+
     # Create and display histograms of the data
     create_histogram_and_display_metrics(values_1, values_2, folder_name_1, folder_name_2, metrics_1, metrics_2)
     
     # Perform direct comparison
     average_score_1, average_score_2, uniform_weights, optimized_weights, weighted_rank_sum_weights, inverse_variance_weights, ahp_weights, robust_pca_weights, mnp_weights = perform_comparison(model_dirs[model_idx_1], model_dirs[model_idx_2])
+    log_debug(f"Comparison results: {folder_name_1} GAS = {average_score_1}, {folder_name_2} GAS = {average_score_2}") 
     
-    metrics_logger.info("Uniform Weights: %s", [round_and_format(w) for w in uniform_weights])
-    metrics_logger.info("Optimized Weights: %s", [round_and_format(w) for w in optimized_weights])
-    metrics_logger.info("Weighted Rank Sum Weights: %s", [round_and_format(w) for w in weighted_rank_sum_weights])
-    metrics_logger.info("Inverse Variance Weights: %s", [round_and_format(w) for w in inverse_variance_weights])
-    metrics_logger.info("Analytic Hierarchy Process Weights: %s", [round_and_format(w) for w in ahp_weights])
-    metrics_logger.info("R_Principal Component Analysis Weights: %s", [round_and_format(w) for w in robust_pca_weights])
-    metrics_logger.info("``Meat-N-Potatoes`` Weights: %s", [round_and_format(w) for w in mnp_weights])
+    # Log weight values
+    log("\n" + "=" * symbol_multiple, file_target=metric_log_file)
+    log("Weight Values", file_target=metric_log_file)
+    log("=" * symbol_multiple, file_target=metric_log_file)
+
+    log(f"Uniform Weights: {format_weight_list(uniform_weights)}", file_target=metric_log_file)
+    log(f"Optimized Weights: {format_weight_list(optimized_weights)}", file_target=metric_log_file)
+    log(f"Weighted Rank Sum Weights: {format_weight_list(weighted_rank_sum_weights)}", file_target=metric_log_file)
+    log(f"Inverse Variance Weights: {format_weight_list(inverse_variance_weights)}", file_target=metric_log_file)
+    log(f"Analytic Hierarchy Process Weights: {format_weight_list(ahp_weights)}", file_target=metric_log_file)
+    log(f"Robust PCA Weights: {format_weight_list(robust_pca_weights)}", file_target=metric_log_file)
+    log(f"Meat-N-Potatoes Weights: {format_weight_list(mnp_weights)}", file_target=metric_log_file)
 
     synthetic_metric_dict_1 = {name: round_and_format(value) for name, value in zip(order_of_import_of_metrics, get_metric_values(synthetic_metrics_1, order_of_import_of_metrics))}
     synthetic_metric_dict_2 = {name: round_and_format(value) for name, value in zip(order_of_import_of_metrics, get_metric_values(synthetic_metrics_2, order_of_import_of_metrics))}
 
-    metrics_logger.info("\n" + "="*50)
-    metrics_logger.info("Normal Tests")
-    metrics_logger.info("="*50)
+    # Normal Tests Header
+    log("\n" + "=" * symbol_multiple, file_target=metric_log_file)
+    log(f"Normal Tests", file_target=metric_log_file)
+    log("=" * symbol_multiple, file_target=metric_log_file)
 
-    metrics_logger.info(f"\nSynthetic Metrics for {folder_name_1}: %s", synthetic_metric_dict_1)
-    metrics_logger.info(f"Synthetic Metrics for {folder_name_2}: %s", synthetic_metric_dict_2)
+    # Synthetic Metrics
+    log(f"Synthetic Metrics for {folder_name_1}: {synthetic_metric_dict_1}", file_target=metric_log_file)
+    log(f"Synthetic Metrics for {folder_name_2}: {synthetic_metric_dict_2}", file_target=metric_log_file)
 
-    metrics_logger.info(f"\nSynthetic Normal Distribution Metrics Comparison for {folder_name_1} (percent differences):")
-    for name, diff in zip(order_of_import_of_metrics, fractional_percent_diff_1):
-        metrics_logger.info(f"{name}: {round_and_format(diff)}%")
+    # Percent Differences
+    log("-" * symbol_multiple, file_target=metric_log_file)
+    log(f"Synthetic Normal Distribution Metrics Comparison for {folder_name_1} (percent differences):", file_target=metric_log_file)
+    for metric_name, percent_diff in zip(order_of_import_of_metrics, fractional_percent_diff_1):
+        log(f"{metric_name}: {round_and_format(percent_diff)}%", file_target=metric_log_file)
 
-    metrics_logger.info(f"\nSynthetic Normal Distribution Metrics Comparison for {folder_name_2} (percent differences):")
-    for name, diff in zip(order_of_import_of_metrics, fractional_percent_diff_2):
-        metrics_logger.info(f"{name}: {round_and_format(diff)}%")
+    log("\n" + f"Synthetic Normal Distribution Metrics Comparison for {folder_name_2} (percent differences):", file_target=metric_log_file)
+    for metric_name, percent_diff in zip(order_of_import_of_metrics, fractional_percent_diff_2):
+        log(f"{metric_name}: {round_and_format(percent_diff)}%", file_target=metric_log_file)
 
-    metrics_logger.info(f"\n{test_name_1} Test for {folder_name_1}: statistic={normality_test_1.statistic:.5f}, p-value={normality_test_1.pvalue:.5f}")
-    metrics_logger.info(normal_status_1)
-    
-    metrics_logger.info(f"\n{test_name_2} Test for {folder_name_2}: statistic={normality_test_2.statistic:.5f}, p-value={normality_test_2.pvalue:.5f}")
-    metrics_logger.info(normal_status_2)
+    # Shapiro-Wilk Test Results for Model 1
+    log("-" * symbol_multiple, file_target=metric_log_file)
+    log(f"{test_name_1} Test for {folder_name_1}: statistic={normality_test_1.statistic:.5f}, p-value={normality_test_1.pvalue:.5f}", file_target=metric_log_file)
+    log(f"Normal Status for {folder_name_1}: {normal_status_1}", file_target=metric_log_file)
 
-    metrics_logger.info("\n" + "="*50)
-    
+    # Shapiro-Wilk Test Results for Model 2
+    log("\n" + f"{test_name_2} Test for {folder_name_2}: statistic={normality_test_2.statistic:.5f}, p-value={normality_test_2.pvalue:.5f}", file_target=metric_log_file)
+    log(f"Normal Status for {folder_name_2}: {normal_status_2}", file_target=metric_log_file)
+
+    # Footer Separator
+    log("\n" + "=" * symbol_multiple + "\n", file_target=metric_log_file)
+
     # METRICS =========================
 
     wins_1 = 0
@@ -751,108 +898,107 @@ def main():
     symbol_separator1 = "-"
     symbol_separator2 = "="
 
-    main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Uniform Weights")
-    main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(uniform_score_1)}")
-    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(uniform_score_2)}")
+    log(symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log("Uniform Weights", file_target=output_stats_file)
+    log(symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_1}: {round_and_format(uniform_score_1)}", file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_2}: {round_and_format(uniform_score_2)}", file_target=output_stats_file)
 
-    main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Optimized Weights")
-    main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(optimized_score_1)}")
-    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(optimized_score_2)}")
+    log("\n" + symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log("Optimized Weights", file_target=output_stats_file)
+    log(symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_1}: {round_and_format(optimized_score_1)}", file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_2}: {round_and_format(optimized_score_2)}", file_target=output_stats_file)
 
-    main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Weighted Rank Sum-Based Weights")
-    main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(weighted_rank_sum_score_1)}")
-    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(weighted_rank_sum_score_2)}")
+    log("\n" + symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log("Weighted Rank Sum-Based Weights", file_target=output_stats_file)
+    log(symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_1}: {round_and_format(weighted_rank_sum_score_1)}", file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_2}: {round_and_format(weighted_rank_sum_score_2)}", file_target=output_stats_file)
 
-    main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Inverse Variance-Based Weights")
-    main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(inverse_variance_score_1)}")
-    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(inverse_variance_score_2)}")
+    log("\n" + symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log("Inverse Variance-Based Weights", file_target=output_stats_file)
+    log(symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_1}: {round_and_format(inverse_variance_score_1)}", file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_2}: {round_and_format(inverse_variance_score_2)}", file_target=output_stats_file)
 
-    main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Analytic Hierarchy Process-Based Weights")
-    main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(ahp_score_1)}")
-    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(ahp_score_2)}")
+    log("\n" + symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log("Analytic Hierarchy Process-Based Weights", file_target=output_stats_file)
+    log(symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_1}: {round_and_format(ahp_score_1)}", file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_2}: {round_and_format(ahp_score_2)}", file_target=output_stats_file)
 
-    main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Robust Principal Component Analysis-Based Weights")
-    main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(robust_pca_score_1)}")
-    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(robust_pca_score_2)}")
+    log("\n" + symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log("Robust Principal Component Analysis-Based Weights", file_target=output_stats_file)
+    log(symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_1}: {round_and_format(robust_pca_score_1)}", file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_2}: {round_and_format(robust_pca_score_2)}", file_target=output_stats_file)
 
-    main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("``Meat-N-Potatoes``-Based Weights")
-    main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"General Accuracy Score for {folder_name_1}: {round_and_format(mnp_score_1)}")
-    main_logger.info(f"General Accuracy Score for {folder_name_2}: {round_and_format(mnp_score_2)}")
+    log("\n" + symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log("``Meat-N-Potatoes``-Based Weights", file_target=output_stats_file)
+    log(symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_1}: {round_and_format(mnp_score_1)}", file_target=output_stats_file)
+    log(f"General Accuracy Score for {folder_name_2}: {round_and_format(mnp_score_2)}", file_target=output_stats_file)
 
-    main_logger.info("\n" + symbol_separator1 * logger_common_symbol_length)
-    main_logger.info("Mean General Accuracy Scores")
-    main_logger.info(symbol_separator1 * logger_common_symbol_length)
-    main_logger.info(f"Mean General Accuracy Score for {folder_name_1}: {round_and_format(average_score_1)}")
-    main_logger.info(f"Mean General Accuracy Score for {folder_name_2}: {round_and_format(average_score_2)}")
+    log("\n" + symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log("Mean General Accuracy Scores", file_target=output_stats_file)
+    log(symbol_separator1 * logger_common_symbol_length, file_target=output_stats_file)
+    log(f"Mean General Accuracy Score for {folder_name_1}: {round_and_format(average_score_1)}", file_target=output_stats_file)
+    log(f"Mean General Accuracy Score for {folder_name_2}: {round_and_format(average_score_2)}", file_target=output_stats_file)
 
-    main_logger.info("\n" + symbol_separator2 * logger_common_symbol_length)
-    main_logger.info("Two-Model Direct Comparison")
-    main_logger.info(symbol_separator2 * logger_common_symbol_length)
+    log("\n" + symbol_separator2 * logger_common_symbol_length, file_target=output_stats_file)
+    log("Two-Model Direct Comparison", file_target=output_stats_file)
+    log(symbol_separator2 * logger_common_symbol_length, file_target=output_stats_file)
     
     better_model_idx = model_idx_1 if (average_score_1 < average_score_2) else model_idx_2
     better_average_score = average_score_1 if (average_score_1 < average_score_2) else average_score_2
     
-    main_logger.info(f"{folder_name_1} won {wins_1}/7 methods")
-    main_logger.info(f"{folder_name_2} won {wins_2}/7 methods")
-    main_logger.info(f"{folder_name_1 if better_model_idx == model_idx_1 else folder_name_2} has the best MGAS of: {better_average_score:.4f}")
+    log(f"{folder_name_1} won {wins_1}/7 methods", file_target=output_stats_file)
+    log(f"{folder_name_2} won {wins_2}/7 methods", file_target=output_stats_file)
+    log(f"{folder_name_1 if better_model_idx == model_idx_1 else folder_name_2} has the best MGAS of: {better_average_score:.4f}", file_target=output_stats_file)
     
     if average_score_1 < average_score_2 and wins_1 > wins_2:
-        main_logger.info("\n" + formatted_message1)
+        log("\n" + formatted_message1, file_target=output_stats_file)
     elif average_score_2 < average_score_1 and wins_2 > wins_1:
-        main_logger.info("\n" + formatted_message2)
+        log("\n" + formatted_message2, file_target=output_stats_file)
     elif ((average_score_1 < average_score_2) or (average_score_1 < average_score_2)) and wins_1 == wins_2:
-        main_logger.info("\n" + formatted_message3)
+        log("\n" + formatted_message3, file_target=output_stats_file)
     else:
-        main_logger.info("\n" + formatted_message4)
+        log("\n" + formatted_message4, file_target=output_stats_file)
     
-    main_logger.info("\n" + symbol_separator2 * logger_common_symbol_length)
-    main_logger.info("Multi-Model Round-Robin Tournament")
-    main_logger.info(symbol_separator2 * logger_common_symbol_length)
+    log("\n" + symbol_separator2 * logger_common_symbol_length, file_target=output_stats_file)
+    log("Multi-Model Round-Robin Tournament", file_target=output_stats_file)
+    log(symbol_separator2 * logger_common_symbol_length, file_target=output_stats_file)
 
     if len(model_dirs) < 3:
-        main_logger.info("Not enough models, please see Direct Comparison!")
+        log("Not enough models, please see Direct Comparison!", file_target=output_stats_file)
     else:
-        comparison_results, win_counts = round_robin_comparisons(model_dirs)
+        try:
+            comparison_results, win_counts = round_robin_comparisons(model_dirs)
+            log("Round-robin tournament completed successfully.", level="DEBUG", file_target=output_stats_file)
+            
+            if len(model_dirs) > 3:
+                # Use the updated report_top_winners function
+                top_winner = report_top_winners(win_counts, top_n=3, logger=log, model_dirs=model_dirs)
+                log("Top winners of the round-robin tournament identified.", level="DEBUG", file_target=output_stats_file)
+            else:
+                log("\nWin Counts for each model:", file_target=output_stats_file)
+                for model_index, count in win_counts.items():
+                    folder_name = os.path.basename(model_dirs[model_index])
+                    log(f"{folder_name}: Wins = {count}", file_target=output_stats_file)
+                top_winner = max(win_counts, key=win_counts.get)
 
-        if len(model_dirs) > 3:
-            top_winner = report_top_winners(win_counts, top_n=3, logger=main_logger, model_dirs=model_dirs)
-        else:
-            main_logger.info("\nWin Counts for each model:")
-            for model_index, count in win_counts.items():
-                folder_name = os.path.basename(model_dirs[model_index])
-                main_logger.info(f"{folder_name}: Wins = {count}")
-            top_winner = max(win_counts, key=win_counts.get)
+            log(f"\n{os.path.basename(model_dirs[top_winner])} is the Tournament winner!", level="INFO", file_target=output_stats_file)
 
-        main_logger.info(f"\n{os.path.basename(model_dirs[top_winner])} is the Tournament winner!")
+        except Exception as e:
+            log(f"Round-robin comparison failed with error: {e}", level="CRITICAL", file_target=output_stats_file)
+            log_debug(traceback.format_exc(), file_target=metric_log_file)
 
-    # Writing log content to the metric log file
-    with open(metric_log_file, "a") as f:
-        f.write(log_stream.getvalue())
+    # Ensure all logs are flushed to their respective files.
+    # 
+    log("Metrics and comparison results written to respective files.", level="INFO", file_target=metric_log_file)
+    log("Summary comparison results updated.", level="INFO", file_target=metric_log_file)
 
-    # Writing log content to the output stats file
-    with open(output_stats_file, "a") as file:
-        file.write(log_stream.getvalue())
-
-    # Display log content in the GUI
-    if hasattr(gui, 'display'):
-        gui.display(log_stream.getvalue())
-
-    log_stream.truncate(0)
-    log_stream.seek(0)
 # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX [[[ MAIN ]]] XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 if __name__ == "__main__":

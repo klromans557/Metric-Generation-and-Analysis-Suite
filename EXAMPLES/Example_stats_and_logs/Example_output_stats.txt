@@ -1,59 +1,67 @@
-========================================================
-General Accuracy Scores - Uniform Weights
-========================================================
-General Accuracy Score for Model 1: 0.2458
-General Accuracy Score for Model 7: 0.2823
+--------------------------------------------------
+Uniform Weights
+--------------------------------------------------
+General Accuracy Score for 01_ddim: 0.1605
+General Accuracy Score for 03_dpm_2: 0.1442
 
-========================================================
-General Accuracy Scores - Subjective Weights
-========================================================
-General Accuracy Score for Model 1: 0.2679
-General Accuracy Score for Model 7: 0.3173
+--------------------------------------------------
+Optimized Weights
+--------------------------------------------------
+General Accuracy Score for 01_ddim: 0.1769
+General Accuracy Score for 03_dpm_2: 0.1731
 
-========================================================
-General Accuracy Scores - PCA-Based Weights
-========================================================
-General Accuracy Score for Model 1: 0.3253
-General Accuracy Score for Model 7: 0.5062
+--------------------------------------------------
+Weighted Rank Sum-Based Weights
+--------------------------------------------------
+General Accuracy Score for 01_ddim: 0.2012
+General Accuracy Score for 03_dpm_2: 0.1918
 
-========================================================
-General Accuracy Scores - Inverse Variance-Based Weights
-========================================================
-General Accuracy Score for Model 1: 0.3216
-General Accuracy Score for Model 7: 0.3203
+--------------------------------------------------
+Inverse Variance-Based Weights
+--------------------------------------------------
+General Accuracy Score for 01_ddim: 0.1056
+General Accuracy Score for 03_dpm_2: 0.1053
 
-========================================================
-General Accuracy Scores - AHP-Based Weights
-========================================================
-General Accuracy Score for Model 1: 0.2754
-General Accuracy Score for Model 7: 0.3603
+--------------------------------------------------
+Analytic Hierarchy Process-Based Weights
+--------------------------------------------------
+General Accuracy Score for 01_ddim: 0.2380
+General Accuracy Score for 03_dpm_2: 0.2252
 
-========================================================
-Averaged General Accuracy Scores
-========================================================
-AGAS for Model 1: 0.2872
-AGAS for Model 7: 0.3573
+--------------------------------------------------
+Robust Principal Component Analysis-Based Weights
+--------------------------------------------------
+General Accuracy Score for 01_ddim: 0.1865
+General Accuracy Score for 03_dpm_2: 0.1558
 
---------------------------------------------------------
-Better Model from Two-Model Direct Comparison
---------------------------------------------------------
-Model 1 has the better AGAS.
+--------------------------------------------------
+``Meat-N-Potatoes``-Based Weights
+--------------------------------------------------
+General Accuracy Score for 01_ddim: 0.4118
+General Accuracy Score for 03_dpm_2: 0.4153
 
-Model 1 won 4/5 methods
-Model 7 won 1/5 methods
+--------------------------------------------------
+Mean General Accuracy Scores
+--------------------------------------------------
+Mean General Accuracy Score for 01_ddim: 0.2115
+Mean General Accuracy Score for 03_dpm_2: 0.2015
 
-Model 1 has the best possible AGAS based on the above
-methods and statistics!
+==================================================
+Two-Model Direct Comparison
+==================================================
+01_ddim won 1/7 methods
+03_dpm_2 won 6/7 methods
+03_dpm_2 has the best MGAS of: 0.2015
 
---------------------------------------------------------
-Final Outcome from Multi-Model Round-Robin
---------------------------------------------------------
-Model 1: Mean AGAS = 0.2636
-Model 2: Mean AGAS = 0.3048
-Model 3: Mean AGAS = 0.2589
-Model 4: Mean AGAS = 0.2234
-Model 5: Mean AGAS = 0.2413
-Model 6: Mean AGAS = 0.3388
-Model 7: Mean AGAS = 0.3272
+03_dpm_2 has the best chance replicating the
+reference!
 
-Model 4 has the best MAGAS of: 0.2234
+==================================================
+Multi-Model Round-Robin Tournament
+==================================================
+Top Winners:
+Top 1: 03_dpm_2 with 14 wins
+Top 2: 11_heun with 13 wins
+Top 3: 12_heunpp2 with 12 wins
+
+03_dpm_2 is the Tournament winner!
