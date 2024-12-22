@@ -14,7 +14,7 @@ Made "for fun", and shared completely for free to those who love GenAI.
 
 Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories for more information, details, and results from three of my experiments using this suite of scripts. Also check out the associated Civitai article, [here](https://civitai.com/articles/6327/statistical-analysis-of-ai-models-an-overview-of-the-mgas-comparison-method-and-scripts)
 
-![screenshot](EXAMPLES/Example_Figures/Example_Figure_0_v2-3GUI.png)
+![screenshot](EXAMPLES/Example_Figures/Example_Figure_0_v2-6GUI.png)
 
 ## Table of Contents
 
@@ -27,6 +27,28 @@ Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories f
 - [Acknowledgments](#acknowledgments)
 
 ## Changelog
+
+### [2.6] - 2024/12/22
+Similar to the previous update, this one extends the facial recognition workflow to the generated image folders (Oops!), further optimizes the multithreading method with batches, and improves logging and error handling.
+
+#### Added:
+- Added functionality to validate reference embeddings during runtime.
+- Added functionality to save reference embeddings in `CACHE` folder to save time with repeated use.
+- Enhanced logging levels (DEBUG, INFO, WARNING, ERROR, CRITICAL) to allow more detailed debugging and runtime insights. Advanced users can set the `LOG_LEVEL` (e.g. "DEBUG") at the top of the scripts for more or less information in the logs.
+- Implemented a robust file integrity check for output data, ensuring that files contain valid, parsable data before proceeding with analysis.
+- Added functionality to detect and handle corrupted files gracefully by skipping them and logging detailed error messages in a new file, `failed_files.txt`.
+
+#### Changed:
+- Updated multiprocessing to utilize Pool.imap_unordered, enabling more efficient distribution of tasks across available processes.
+- Updated tasks to be set up using dynamic batch sizes tied to the user defined `num_processes`.
+- Restructured the image embedding computation process to reduce redundancy and improve readability.
+- Improved histogram generation with consistent bin sizes for better visual comparison between datasets.
+
+#### Fixed:
+- Fixed the alignment and preprocessing steps not being applied to image folders (Oops!).
+- Fixed `install_MGAS.bat` such that it creates all needed directories for the user (no longer need to DELETE TXTs).
+- Fixed a bug in handling output files where invalid or missing data.
+- Improved error handling for missing or incompatible DLib models.
 
 ### [2.5] - 2024/12/19
 This update focuses on properly implementing the facial recognition workflow from the methodology section and optimizing the parallel processing to increase speed.
