@@ -1,12 +1,4 @@
 @echo off
-REM Check if Python is installed
-python --version
-IF ERRORLEVEL 1 (
-    echo Python is not installed. Please install Python Version 3.7, or later.
-    pause
-    exit /B
-)
-
 REM Create necessary directory structure if it doesn't exist
 echo Checking and creating required directory structure...
 if not exist CACHE mkdir CACHE
@@ -24,8 +16,26 @@ IF ERRORLEVEL 1 (
 
 echo Directory structure checked/created successfully.
 
+REM === Detect and use Python 3.10 ===
+FOR /F "delims=" %%i IN ('where python3.10 2^>nul') DO (
+    SET "PYTHON_EXEC=%%i"
+    GOTO :found_py310
+)
+
+IF EXIST "C:\Python310\python.exe" (
+    SET "PYTHON_EXEC=C:\Python310\python.exe"
+    GOTO :found_py310
+)
+
+ECHO Error: Python 3.10 not found. Please install it and make sure it's in your PATH.
+pause
+exit /B
+
+:found_py310
+ECHO Using Python 3.10 from: %PYTHON_EXEC%
+
 REM Create a virtual environment
-python -m venv venv
+%PYTHON_EXEC% -m venv venv
 IF ERRORLEVEL 1 (
     echo Failed to create virtual environment. Please check your Python installation.
     pause
@@ -46,10 +56,11 @@ IF ERRORLEVEL 1 (
     exit /B
 )
 
-REM Check if shape_predictor_68_face_landmarks.dat exists
+REM Check if the required mdoels exists
 set DLIB_DIR=DLIB
 set SHAPE_FILE=%DLIB_DIR%\shape_predictor_68_face_landmarks.dat
 set RESNET_FILE=%DLIB_DIR%\dlib_face_recognition_resnet_model_v1.dat
+set CLIP_FILE=%DLIB_DIR%\clip-ViT-B-32-vision.onnx
 
 if exist "%SHAPE_FILE%" (
     echo shape_predictor_68_face_landmarks.dat already exists. Skipping download.
@@ -59,6 +70,12 @@ if exist "%SHAPE_FILE%" (
 
 if exist "%RESNET_FILE%" (
     echo dlib_face_recognition_resnet_model_v1.dat already exists. Skipping download.
+) else (
+    set DOWNLOAD_NEEDED=1
+)
+
+if exist "%CLIP_FILE%" (
+    echo clip-ViT-B-32-vision.onnx already exists. Skipping download.
 ) else (
     set DOWNLOAD_NEEDED=1
 )
@@ -74,10 +91,12 @@ if defined DOWNLOAD_NEEDED (
     )
 )
 
-REM Verify that the necessary .dat files are present
+REM Verify that the necessary files are present
 if exist "%SHAPE_FILE%" (
     if exist "%RESNET_FILE%" (
-        set SETUP_SUCCESS=1
+        if exist "%CLIP_FILE%" (
+            set SETUP_SUCCESS=1
+        )
     )
 )
 
@@ -101,7 +120,7 @@ if defined SETUP_SUCCESS (
 ) else (
     echo =====================================================================
     echo.
-    echo Error: One or more required .dat files are missing.
+    echo Error: One or more required model files are missing.
     echo Please check your setup and try running the script again.
     echo =====================================================================
     pause

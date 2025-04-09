@@ -533,7 +533,7 @@ def main():
         log(f"Logging initialized at {LOG_LEVEL} level.")
         
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        logs_dir = os.path.join(script_dir, 'LOGS')
+        logs_dir = os.getenv('LOGS_DIR', os.path.join(script_dir, 'LOGS'))
         os.makedirs(logs_dir, exist_ok=True)
         
         # Validate number of processes
@@ -554,9 +554,9 @@ def main():
             log_debug(f"Stack trace: {traceback.format_exc()}")
             sys.exit(1)
 
-        dir_images = os.path.join(script_dir, 'DIR', 'images')
-        dir_references = os.path.join(script_dir, 'DIR', 'references')
-        dir_output = os.path.join(script_dir, 'DIR', 'output')
+        dir_images = os.getenv('IMAGES_DIR', os.path.join(script_dir, 'DIR', 'images'))
+        dir_references = os.getenv('REFERENCES_DIR', os.path.join(script_dir, 'DIR', 'references'))
+        dir_output = os.getenv('OUTPUT_DIR', os.path.join(script_dir, 'DIR', 'output'))
 
         shape_predictor_68_path = os.path.join(dlib_folder, 'shape_predictor_68_face_landmarks.dat')
         face_recognition_model_path = os.path.join(dlib_folder, 'dlib_face_recognition_resnet_model_v1.dat')

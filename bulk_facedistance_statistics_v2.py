@@ -600,10 +600,10 @@ def round_robin_comparisons(model_dirs):
 def main():
     # Automatically sets directories and files
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    base_dir = os.path.join(script_dir, 'DIR', 'output')  # Directory containing model folders
+    base_dir = os.getenv('OUTPUT_DIR', os.path.join(script_dir, 'DIR', 'output'))  # Directory containing model folders
 
     # Logging files and folder
-    logs_dir = os.path.join(script_dir, 'LOGS')
+    logs_dir = os.getenv('LOGS_DIR', os.path.join(script_dir, 'LOGS'))
     metric_log_file = os.path.join(logs_dir, 'metric_weight_normal_stats.txt')
     output_stats_file = os.path.join(logs_dir, 'output_stats.txt')
 

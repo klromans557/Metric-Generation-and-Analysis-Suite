@@ -6,3 +6,4 @@ matplotlib==3.5.2
 dlib==19.24.0
 opencv-python==4.10.0.84
 huggingface-hub==0.26.5
+onnxruntime==1.17.0

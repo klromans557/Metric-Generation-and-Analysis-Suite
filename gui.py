@@ -11,7 +11,7 @@ import tkinter.filedialog as filedialog
 class ScriptRunnerApp(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("reaper557's Metric Generation and Analysis Suite (M.G.A.S.) - v2.6")
+        self.title("reaper557's Metric Generation and Analysis Suite (M.G.A.S.) - v3.0")
         self.geometry("750x1000")
         self.configure(bg='#7a7a7a')  # Change the background color of the main window
         
@@ -98,15 +98,18 @@ class ScriptRunnerApp(tk.Tk):
         self.models_to_compare.insert(0, "1,2")
         self.models_to_compare.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
-        # Section 3: Buttons (1x3 grid)
-        self.run_create_button = tk.Button(self.section3, text="Run Create Script", command=self.run_create_facedistance_data)
-        self.run_create_button.grid(row=0, column=0, padx=5, pady=5)
+        # Section 3: Buttons (1x4 grid)
+        self.run_face_button = tk.Button(self.section3, text="Run Face Script", command=self.run_create_facedistance_data)
+        self.run_face_button.grid(row=0, column=0, padx=5, pady=5)
+
+        self.run_style_button = tk.Button(self.section3, text="Run Style Script", command=self.run_create_styledata)
+        self.run_style_button.grid(row=0, column=1, padx=5, pady=5)
 
         self.run_bulk_button = tk.Button(self.section3, text="Run Bulk Script", command=self.run_bulk_facedistance_statistics)
-        self.run_bulk_button.grid(row=0, column=1, padx=5, pady=5)
+        self.run_bulk_button.grid(row=0, column=2, padx=5, pady=5)
 
-        self.open_last_figure_button = tk.Button(self.section3, text="Open Last Saved Figure", command=self.open_saved_figure)
-        self.open_last_figure_button.grid(row=0, column=2, padx=5, pady=5)
+        self.open_last_figure_button = tk.Button(self.section3, text="Open Last Figure", command=self.open_saved_figure)
+        self.open_last_figure_button.grid(row=0, column=3, padx=5, pady=5)
 
         # Section 4: Output text box
         self.output_text = tk.Text(self.section4, state="disabled")
@@ -149,6 +152,8 @@ class ScriptRunnerApp(tk.Tk):
         # Set the log update interval based on the script name
         if script_name == 'create_facedistance_data.py':
             self.log_update_interval = 1000
+        elif script_name == 'create_styledata.py':
+            self.log_update_interval = 1000
         elif script_name == 'bulk_facedistance_statistics_v2.py':
             self.log_update_interval = 10000
         
@@ -168,6 +173,11 @@ class ScriptRunnerApp(tk.Tk):
             output_stats_path = os.path.join(self.logs_dir.get(), self.current_log_file)
             with open(output_stats_path, 'w') as output_stats_file:
                 output_stats_file.write('')
+        elif script_name == 'create_styledata.py':
+            self.current_log_file = 'styledata_log.txt'
+            style_log_path = os.path.join(self.logs_dir.get(), self.current_log_file)
+            with open(style_log_path, 'w') as style_log_file:
+                style_log_file.write('Starting style script log.\n')
 
         # Fix local venv assignment
         #command = ['python', script_name]
@@ -264,15 +274,26 @@ class ScriptRunnerApp(tk.Tk):
         if self.is_directory_empty(self.references_dir.get()):
             messagebox.showerror("Error", "The 'references' folder is empty.")
             return
+        self.current_log_file = "process_log.txt"
         self.run_script('create_facedistance_data.py')
+    
+    def run_create_styledata(self):
+        if self.is_directory_empty(self.images_dir.get()):
+            messagebox.showerror("Error", "The 'images' folder is empty.")
+            return
+        if self.is_directory_empty(self.references_dir.get()):
+            messagebox.showerror("Error", "The 'references' folder is empty.")
+            return
+        self.current_log_file = "styledata_log.txt"
+        self.run_script('create_styledata.py')
 
     def run_bulk_facedistance_statistics(self):
         if self.is_directory_empty(self.output_dir.get()):
             messagebox.showerror("Error", "The 'output' folder is empty.")
             return
         output_stats_file = os.path.join(self.logs_dir.get(), 'output_stats.txt')
+        self.current_log_file = "output_stats.txt"
         self.run_script('bulk_facedistance_statistics_v2.py', output_file=output_stats_file)
-
 
     def display_output(self, output):
         self.output_text.configure(state="normal")
