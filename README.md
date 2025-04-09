@@ -1,8 +1,8 @@
 # Metric Generation and Analysis Suite
 
-A set of Python scripts that I developed to help me train AI image models using large datasets of facial embedding data, determining a generalized accuracy score based on various statistical methods. Given at least two models represented by folders containing their generated images, these scripts create a set of facial similarity metric data as simple Python lists for each image. With this data a carefully selected set of statistical metrics and weighting schemes are used to generate the score, and a couple of plots are created to quickly visualize the results. 
+A set of Python scripts that I developed to help me train AI image models using large datasets of facial and style embedding data, determining a generalized accuracy score based on various statistical methods. Given at least two models represented by folders containing their generated images, these scripts create a set of facial or style similarity metric data as simple Python lists for each image. With this data a carefully selected set of statistical metrics and weighting schemes are used to generate the score, and a couple of plots are created to quickly visualize the results. 
 
-The intention is to use the scripts to compare two Generative AI image models (cf. Stable Diffusion) by analyzing large sets of randomly generated images against a finite set of reference images of the trained subject. Such a comparison can be crucial in determining the effect of a single change in training methodology and its overall effect on model output. For example, seeing the effect of changing the Loss Weight function between 'Constant' and 'Min_SNR_Gamma' on what is otherwise the same dataset and hyperparameters. Ultimately, the success of a model is determined by its ability to reliably reproduce the likeness of the trained subject, and this script is my first attempt to quantitatively address issues related to that.
+The intention is to use the scripts to compare two Generative AI image models (cf. Stable Diffusion) by analyzing large sets of randomly generated images against a finite set of reference images of the trained subject or style. Such a comparison can be crucial in determining the effect of a single change in training or image generation methodology and its overall effect on model output. For example, seeing the effect of changing the Loss Weight function between 'Constant' and 'Min_SNR_Gamma' on what is otherwise the same dataset and hyperparameters, or testing the effect on changing the image sampler from 'DPM++2M' and 'DPM++2M-SDE'. Ultimately, the success of a model is determined by its ability to reliably reproduce the likeness of the trained subject or style, and this script is my first attempt to quantitatively address issues related to that.
 
 ¡NOTE! The repo now contains a GUI and script that can perform the similarity metric analysis without the need for any external apps/nodes/extensions; it is now self-contained!
 
@@ -12,9 +12,9 @@ Feel free to use, share, and modify this suite to suit your needs.
 Made "for fun", and shared completely for free to those who love GenAI.
 <(˶ᵔᵕᵔ˶)>
 
-Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories for more information, details, and results from three of my experiments using this suite of scripts. Also check out the associated Civitai article, [here](https://civitai.com/articles/6327/statistical-analysis-of-ai-models-an-overview-of-the-mgas-comparison-method-and-scripts)
+Please read the 'PLEASE_READ_ME' (\[WIP\] now outdated and focused on face script only) TXTs in the main repo and example directories for more information, details, and results from three of my experiments using this suite of scripts. Also check out the associated Civitai article, [here](https://civitai.com/articles/6327/statistical-analysis-of-ai-models-an-overview-of-the-mgas-comparison-method-and-scripts)
 
-![screenshot](EXAMPLES/Example_Figures/Example_Figure_0_v2-6GUI.png)
+![screenshot](EXAMPLES/Example_Figures/Example_Figure_0_v3-0GUI.png)
 
 ## Table of Contents
 
@@ -27,6 +27,21 @@ Please read the 'PLEASE_READ_ME' TXTs in the main repo and example directories f
 - [Acknowledgments](#acknowledgments)
 
 ## Changelog
+
+### [3.0] - 2025/04/09
+Major update that adds ability to test style models for analysis with the bulk script.
+
+#### Added
+- Added `create_styledata.py` – evaluates style similarity between reference and generated images using a CLIP ONNX model.
+- Added `onnxruntime==1.17.0` to support ONNX inference
+
+#### Changed
+- The `install_MGAS.bat` now checks for the new model, `clip-ViT-B-32-vision.onnx` as well, which is hosted by **Qdrant** on HuggingFace.
+- Renamed “Run Create Script” button to **“Run Face Script”** for clarity alongside the new **“Run Style Script”**.
+- The venv setup now expects **Python 3.10** to be installed beforehand with a preference for `3.10.11`.
+
+#### Fixed
+- Fixed the face and bulk scripts not properly using gui path enviroment variables (Oops!).
 
 ### [2.6] - 2024/12/22
 Similar to the previous update, this one extends the facial recognition workflow to the generated image folders (Oops!), further optimizes the multithreading method with batches, and improves logging and error handling.
@@ -129,7 +144,7 @@ _First release._
 
 ## Installation
 
-1. Please have Python 3.7, or later, installed (I use 3.10.11, as do many other AI apps). You can download it from [python.org](https://www.python.org/downloads/) in the "Looking for a specific release?" section by scrolling down (3.10.11 at release date, April 5, 2023).
+1. Please have Python 3.10 installed (use 3.10.11 for best results). You can download it from [python.org](https://www.python.org/downloads/) in the "Looking for a specific release?" section by scrolling down (3.10.11 at release date, April 5, 2023).
 
 2. Clone the repository and go into the created folder:
     ```sh
@@ -139,18 +154,18 @@ _First release._
 
 3. Install the required dependencies, directories, and models:
    - Use the provided `install_MGAS.bat` file
-   - Installs required Python dependencies, empty directories, and DLib models (~ 100MB).
+   - Installs required Python dependencies, empty directories, and models (~ 400MB). Note: If the model download fails during install, then please run the install bat again.
     
 ## Usage
 
-To use the script and analyze the face-distance data, follow these steps (see `PLEASE_READ_ME.txt` files for more details):
+To use the script and analyze the face-distance or style data, follow these steps (see `PLEASE_READ_ME.txt` files for more details \[WIP\] outdated):
    
 1. Use the provided `run_GUI.bat` file to open the GUI and use the scripts.
    
-2. Make sure your image folders and fixed set of reference images are in the correct directories within `DIR` before clicking the `Run Create Script` button.
-   This script will generate the face similarity metric data in the `output` folder.
+2. Make sure your image folders and fixed set of reference images are in the correct directories within `DIR` before clicking either the `Run Face Script` or `Run Style Script` buttons.
+   This script will generate the face and style similarity metric data in the `output` folder.
    - Within images folder: place folders of images that will represent "models" to be tested. For example, a folder called "dpmpp" and another called "euler", each filled with 10 images generated using those respective samplers (all other parameters fixed).
-   - Within references folder: place a fixed set of reference images to compare the "models" to. Data for each reference is collected together for the corresponding tested model. For example, use 5 images of your main subject here. Each model will then get 10x5=50 data points for the BULK statistics. Results improve with more images/refs!
+   - Within references folder: place a fixed set of reference images to compare the "models" to. Data for each reference is collected together for the corresponding tested model. For example, use 5 images of your main subject or style here. Each model will then get 10x5=50 data points for the BULK statistics. Results improve with more images/refs!
 
 4. Data created, or placed, into the `output` folder is accessible to the BULK script. Use `Run Bulk Script` button to perform statistics on data.
    - Data on the metrics/weights, results of the comparisons, and the tournament winner will then be displayed in the GUI text box.
@@ -160,7 +175,7 @@ To use the script and analyze the face-distance data, follow these steps (see `P
    in order to update the figure.
    - Use the `Models to Compare` GUI variable to change which two models are plotted in the figure; models are ordered by name, ascending,
      i.e. the default '1,2' compares the first and second model folders.
-   - Use the `Number of Processes` GUI variable to change how many CPU cores/threads are used for processing images with the CREATE script
+   - Use the `Number of Processes` GUI variable to change how many CPU cores/threads are used for processing images with the FACE or STYLE scripts.
 
 ## Methodology
 
@@ -176,6 +191,9 @@ The heart of the method relies on the similarity facial embedding distance data 
 6. Recognition: Finally, the extracted features are compared to a known database of faces. In the case of MGAS, this database is made up of the reference images placed by the user. The system analyzes how similar the faces are and generates a distance value based on this association (e.g. 0.3). The lower the value the closer the tested image matches a given reference. This is the origin of the maxim, "Lower is better!"
 
 From a given set of images to test and another set of reference images to form the database, a large set of statistical data can be generated by these similarity measurements.
+
+### Style
+\[WIP\]
 
 ### Metrics
 
@@ -231,6 +249,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [Matteo Spinelli](https://github.com/cubiq/ComfyUI_FaceAnalysis) for creating the ComfyUI custom node that I used as inspiration for the CREATE script
   and for hosting the DLib model files on HuggingFace.
+- [Qdrant](https://huggingface.co/Qdrant/clip-ViT-B-32-vision) for converting and hosting the CLIP ONNX model on HuggingFace.
 - [OpenAI](https://www.openai.com) & [Alibaba Cloud](https://www.alibabacloud.com) for providing guidance and assistance in developing this project.
 - [GitHub](https://github.com) for hosting the repository.
 - [Dr. Furkan Gözükara](https://civitai.com/user/SECourses) for sharing his scripts through the SECourses Civitai, Patreon, associated Discord server and YouTube channel.
